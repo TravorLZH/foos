@@ -12,7 +12,7 @@ all:	floppy.img
 	$(AS) -o $(<:.s=.o) $<
 	$(LD) $(boot_LDFLAGS) -o $@ $(<:.s=.o)
 
-floppy.img:	boot/bootsect.bin boot/setup.bin
+floppy.img:	boot/bootsect.bin boot/setup.bin boot/setup32.bin
 	cat $^ > $@
 
 run:
