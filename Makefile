@@ -31,3 +31,4 @@ run:
 clean:
 	$(RM) -rf *.img *.iso
 	$(RM) -rf boot/*.bin boot/*.o
+	$(RM) -rf kernel/*.bin kernel/*.o
