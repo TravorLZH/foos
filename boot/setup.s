@@ -4,6 +4,7 @@
 SETUPSEG=0x1000
 CODESEG=0x8
 PMBASE=0x10000
+SYSSIZE=0x400	# Kernel size
 
 setup:
 	movw	$SETUPSEG,%ax
@@ -17,9 +18,9 @@ move_system:
 	xorw	%ax,%ax
 	movw	%ax,%di
 	movw	%ax,%es
-	movw	$0x100,%cx
+	movw	$SYSSIZE,%cx
 	cld
-	rep	movsw
+	rep	movsb
 switch_pm:
 	lgdt	gdt_descriptor
 	movl	%cr0,%eax
