@@ -10,14 +10,14 @@ setup:
 	movw	%ax,%ds
 	movw	$welcome_setup,%si
 	call	print_string
-move_setup32:
+move_system:
 	cli
-	movw	$0x100,%ax
+	movw	$0x200,%ax
 	movw	%ax,%si
 	xorw	%ax,%ax
 	movw	%ax,%di
 	movw	%ax,%es
-	movw	$0x80,%cx
+	movw	$0x100,%cx
 	cld
 	rep	movsw
 switch_pm:
@@ -63,4 +63,4 @@ welcome_setup:
 	.ascii	"Moving kernel"
 	.byte	0x0D,0x0A,0x0
 
-.space	256-(.-setup)
+.space	512-(.-setup)
