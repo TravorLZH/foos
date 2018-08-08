@@ -2,23 +2,30 @@
 .text
 # Constant
 SETUPSEG=0x1000
-PMBASE=0x10000	# Base address of protected mode
 CODESEG=0x8
-DATASEG=0x10
+PMBASE=0x10000
 
 setup:
 	movw	$SETUPSEG,%ax
 	movw	%ax,%ds
 	movw	$welcome_setup,%si
 	call	print_string
+move_setup32:
+	cli
+	movw	$0x100,%ax
+	movw	%ax,%si
+	xorw	%ax,%ax
+	movw	%ax,%di
+	movw	%ax,%es
+	movw	$0x80,%cx
+	cld
+	rep	movsw
 switch_pm:
-	cli	# Critical operation won't need interrupts
 	lgdt	gdt_descriptor
 	movl	%cr0,%eax
-	orb	$0x1,%al
+	orl	$0x1,%eax
 	movl	%eax,%cr0
-.code32
-	ljmp	$CODESEG,$0x10100
+	ljmp	$CODESEG,$0x0
 .code16
 # Useful 16-bit functions
 print_string:
@@ -50,22 +57,10 @@ gdt_data:
 	.byte	0x0
 gdt_descriptor:
 	.word	0x17	# 3 entries
-	.word	gdt_start,1
+	.long	gdt_start+PMBASE
 # Strings
 welcome_setup:
-	.ascii	"Switching to protected mode"
+	.ascii	"Moving kernel"
 	.byte	0x0D,0x0A,0x0
 
 .space	256-(.-setup)
-begin_pm:
-	jmp	.+PMBASE
-	movl	$DATASEG,%eax
-	movw	%ax,%ds
-	movw	%ax,%es
-	movw	%ax,%fs
-	movw	%ax,%gs
-	movl	$0xB8000,%ebx
-	movl	$0x0F41,%eax
-	movl	%eax,(%ebx)
-	jmp	.+PMBASE
-.space	256-(.-begin_pm)
