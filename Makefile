@@ -2,15 +2,22 @@
 
 AS=i386-elf-as
 LD=i386-elf-ld
+RM=rm
+QEMU=qemu-system-i386
+bootsect_LDFLAGS=--oformat=binary -Ttext=0 -eboot
 
 all:	floppy.img
 
 boot/bootsect.bin:	boot/bootsect.s
 	$(AS) -o $(<:.s=.o) $<
-	$(LD) --oformat=binary -Ttext=0 -eboot -o $@ $(<:.s=.o)
+	$(LD) $(bootsect_LDFLAGS) -o $@ $(<:.s=.o)
 
 floppy.img:	boot/bootsect.bin
-	cp $< $@
+	cat $^ > $@
 
 run:
-	qemu-system-i386 -fda floppy.img
+	$(QEMU) -fda floppy.img
+
+clean:
+	$(RM) -rf *.img *.iso
+	$(RM) -rf boot/*.bin boot/*.o
