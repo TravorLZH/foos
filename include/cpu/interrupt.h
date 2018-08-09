@@ -22,7 +22,10 @@ struct registers{
 	uint32_t eip,cs,eflags,esp,ss;	// From processor
 };
 
-extern void idt_init(void);
+typedef	void (*inthandler_t)(struct registers);
+
+extern void int_init(void);
+extern void int_hook_handler(uint8_t no,inthandler_t handler);
 
 /* Hooks of each interrupts */
 extern void int0(void);
