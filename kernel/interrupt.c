@@ -1,10 +1,18 @@
 #include <system.h>
 #include <cpu/interrupt.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 static struct idt_entry entries[256];
 static struct idt_desc idtr;
+static inthandler_t handlers[256];
+
+static void zero_division(struct registers regs)
+{
+	puts("Zero division");
+	hang();
+}
 
 static void idt_flush(struct idt_desc *idtr)
 {
@@ -21,7 +29,7 @@ static void idt_hook(uint8_t num,void *fp,uint16_t segment,uint8_t flags)
 	entries[num].flags=flags;
 }
 
-void idt_init(void)
+static void idt_init(void)
 {
 	idtr.limit=sizeof(entries)-1;
 	idtr.base=&entries;
@@ -61,7 +69,33 @@ void idt_init(void)
 	idt_flush(&idtr);
 }
 
+void int_init(void)
+{
+	puts("Initializing Interrupt");
+	idt_init();
+	int_hook_handler(0,zero_division);
+}
+
 void int_handler(struct registers regs)
 {
-	puts("Interrupt Called!\nYou need a handler");
+	uint8_t color=kernel_tty.color;
+	kernel_tty.color=0x0F;
+	puts("Interrupt Called!");
+	if(handlers[regs.int_no]){
+		inthandler_t h=handlers[regs.int_no];
+		h(regs);
+	}else{
+		char tmp[4];
+		tmp[3]='\0';
+		itoa(regs.int_no,tmp);
+		tty_writestring(&kernel_tty,"Unhandled interrupt ");
+		tty_writestring(&kernel_tty,tmp);
+		putchar('\n');
+	}
+	kernel_tty.color=color;
+}
+
+void int_hook_handler(uint8_t no,inthandler_t handler)
+{
+	handlers[no]=handler;
 }
