@@ -7,6 +7,8 @@ RM=rm
 QEMU=qemu-system-i386
 LDFLAGS=--oformat=binary -Ttext=0
 
+.PHONY:	all clean kernel/kernel.bin
+
 all:	floppy.img
 
 %.bin:	%.s
@@ -16,14 +18,8 @@ all:	floppy.img
 floppy.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
 	cat $^ > $@
 
-%.o:	%.c
-	$(CC) -o $@ -c $< -ffreestanding
-
-%.o:	%.s
-	$(AS) -o $@ $<
-
-kernel/kernel.bin:	kernel/entry.o kernel/main.o
-	$(LD) $(LDFLAGS) -o $@ $^
+kernel/kernel.bin:
+	$(MAKE) -C kernel kernel.bin CC=$(CC) LD=$(LD) AS=$(AS)
 
 run:
 	$(QEMU) -fda floppy.img
@@ -31,4 +27,4 @@ run:
 clean:
 	$(RM) -rf *.img *.iso
 	$(RM) -rf boot/*.bin boot/*.o
-	$(RM) -rf kernel/*.bin kernel/*.o
+	$(MAKE) -C kernel $@
