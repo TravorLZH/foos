@@ -8,4 +8,4 @@ Another OS project because my TravorOS's code is too messy
 - [x] C kernel
 - [ ] Interrupts
 - [ ] Keyboard
-- [ ] VGA
+- [x] VGA
