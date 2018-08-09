@@ -1,5 +1,6 @@
 #include <system.h>
 #include <cpu/interrupt.h>
+#include <dev/pic.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,6 +8,8 @@
 static struct idt_entry entries[256];
 static struct idt_desc idtr;
 static inthandler_t handlers[256];
+
+static void irq_init(void);
 
 static void zero_division(struct registers regs)
 {
@@ -66,6 +69,7 @@ static void idt_init(void)
 	idt_hook(29,int29,CODESEG,0x8E);
 	idt_hook(30,int30,CODESEG,0x8E);
 	idt_hook(31,int31,CODESEG,0x8E);
+	irq_init();
 	idt_flush(&idtr);
 }
 
@@ -98,4 +102,35 @@ void int_handler(struct registers regs)
 void int_hook_handler(uint8_t no,inthandler_t handler)
 {
 	handlers[no]=handler;
+}
+
+/* IRQ Stuff here */
+static void irq_init(void)
+{
+	pic_remap(0x20,0x28);
+	idt_hook(32,irq0,CODESEG,0x8E);
+	idt_hook(33,irq1,CODESEG,0x8E);
+	idt_hook(34,irq2,CODESEG,0x8E);
+	idt_hook(35,irq3,CODESEG,0x8E);
+	idt_hook(36,irq4,CODESEG,0x8E);
+	idt_hook(37,irq5,CODESEG,0x8E);
+	idt_hook(38,irq6,CODESEG,0x8E);
+	idt_hook(39,irq7,CODESEG,0x8E);
+	idt_hook(40,irq8,CODESEG,0x8E);
+	idt_hook(41,irq9,CODESEG,0x8E);
+	idt_hook(42,irq10,CODESEG,0x8E);
+	idt_hook(43,irq11,CODESEG,0x8E);
+	idt_hook(44,irq12,CODESEG,0x8E);
+	idt_hook(45,irq13,CODESEG,0x8E);
+	idt_hook(46,irq14,CODESEG,0x8E);
+	idt_hook(47,irq15,CODESEG,0x8E);
+}
+
+void irq_handler(struct registers regs)
+{
+	pic_send_eoi(regs.int_no-0x20);
+	if(handlers[regs.int_no]){
+		inthandler_t h=handlers[regs.int_no];
+		h(regs);
+	}
 }
