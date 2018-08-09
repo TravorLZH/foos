@@ -8,7 +8,7 @@ These are my little goals to make this OS
 - [x] GDT
 - [x] C kernel
 - [x] Interrupts
-- [ ] IRQs
+- [x] IRQs
 - [ ] Timer
 - [ ] Keyboard
 - [x] VGA
