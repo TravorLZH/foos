@@ -7,7 +7,9 @@ These are my little goals to make this OS
 - [x] Bootloader
 - [x] GDT
 - [x] C kernel
-- [ ] Interrupts
+- [x] Interrupts
+- [ ] IRQs
+- [ ] Timer
 - [ ] Keyboard
 - [x] VGA
 
