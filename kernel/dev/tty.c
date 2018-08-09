@@ -58,6 +58,9 @@ void tty_writechar(struct tty *ptty,char c)
 		y++;
 		tty_update_cursor(ptty,VGA_COORD(0,y));
 		break;
+	case '\r':
+		tty_update_cursor(ptty,VGA_COORD(0,y));
+		break;
 	default:
 		*ptr=(ptty->color << 8)+c;
 		tty_update_cursor(ptty,++current);
