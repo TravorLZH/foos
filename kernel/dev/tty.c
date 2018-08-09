@@ -1,5 +1,6 @@
 #include <dev/tty.h>
 #include <inttypes.h>
+#include <string.h>
 #include <asm/ioports.h>
 
 static uint8_t color;
@@ -51,20 +52,33 @@ void tty_writechar(struct tty *ptty,char c)
 {
 	uint16_t *ptr=VGA_BASE;
 	uint16_t current=tty_get_cursor();
-	uint16_t x=VGA_X(current),y=VGA_Y(current);
+	uint16_t x=VGA_X(current),y=VGA_Y(current),i;
 	ptr+=current;
 	switch(c){
 	case '\n':
 		y++;
-		tty_update_cursor(ptty,VGA_COORD(0,y));
-		break;
 	case '\r':
-		tty_update_cursor(ptty,VGA_COORD(0,y));
+		current=VGA_COORD(0,y);
 		break;
 	default:
 		*ptr=(ptty->color << 8)+c;
-		tty_update_cursor(ptty,++current);
+		current++;
 	}
+	x=VGA_X(current);
+	y=VGA_Y(current);
+	if(y>=VGA_HEIGHT){
+		y=VGA_HEIGHT-1;
+		for(i=1;i<=y;i++){
+			memcpy(VGA_BASE+VGA_COORD(0,i-1),
+					VGA_BASE+VGA_COORD(0,i),
+					VGA_WIDTH*2);
+		}
+		uint16_t *last=VGA_BASE+VGA_COORD(0,y);
+		for(i=0;i<VGA_WIDTH;i++){
+			last[i]=0x0720;
+		}
+	}
+	tty_update_cursor(ptty,VGA_COORD(x,y));
 }
 
 size_t tty_writestring(struct tty *ptty,const char *string)
