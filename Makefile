@@ -7,7 +7,7 @@ RM=rm
 QEMU=qemu-system-i386
 LDFLAGS=--oformat=binary -Ttext=0
 
-.PHONY:	all clean kernel/kernel.bin
+.PHONY:	all run clean dep clean-dep kernel/kernel.bin
 
 all:	floppy.img
 
@@ -27,4 +27,10 @@ run:
 clean:
 	$(RM) -rf *.img *.iso
 	$(RM) -rf boot/*.bin boot/*.o
+	$(MAKE) -C kernel $@
+
+dep:
+	$(MAKE) -C kernel $@
+
+clean-dep:
 	$(MAKE) -C kernel $@
