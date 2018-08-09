@@ -14,7 +14,7 @@ all:	kernel.bin
 %.o:	%.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-kernel.bin:	entry.o $(OBJ)
+kernel.bin:	entry.o $(OBJ) ../lib/libc.a
 	$(LD) -Tlink.ld -o $@ $^ --oformat=binary
 
 clean:
