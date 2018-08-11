@@ -8,5 +8,7 @@ kernel_entry:
 	movw	%ax,%es
 	movw	%ax,%fs
 	movw	%ax,%gs
+	movw	%ax,%ss
+	movl	$0x10000,%esp
 	call	kernel_main
-	jmp	.	
+	jmp	.
