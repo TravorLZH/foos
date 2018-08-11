@@ -9,17 +9,6 @@
 
 struct tty kernel_tty;
 
-static void kbd_irq(struct registers regs)
-{
-	uint8_t scancode=inb(0x60);
-	if(scancode & 0x80){
-		puts("Key released!");
-	}else{
-		puts("Key pressed!");
-	}
-	printf("Scancode: 0x%x\n",(uint32_t)scancode);
-}
-
 static const char* floppy_type[]={
 	"Not Applicable",
 	"360 KB 5.25\"",
@@ -40,9 +29,9 @@ static void check_floppy(void)
 
 int kernel_main(void *reserved)
 {
-	tty_init(&kernel_tty);
+	tty_init(NULL);
+	tty_create(&kernel_tty);
 	int_init();
-	int_hook_handler(0x21,kbd_irq);
 	int_enable();
 	check_floppy();
 	return 0;
