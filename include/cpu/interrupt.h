@@ -26,6 +26,14 @@ typedef	void (*inthandler_t)(struct registers);
 
 extern void int_init(void);
 extern void int_hook_handler(uint8_t no,inthandler_t handler);
+static inline void int_enable(void)
+{
+	__asm__("sti");
+}
+static inline void int_disable(void)
+{
+	__asm__("cli");
+}
 
 /* Hooks of each interrupts */
 extern void int0(void);
