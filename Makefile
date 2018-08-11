@@ -21,10 +21,11 @@ all-subdirs:
 	$(LD) $(LDFLAGS) -o $@ $(<:.s=.o)
 
 floppy.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
-	cat $^ > $@
+	dd if=/dev/zero status=noxfer of=$@ count=2880
+	cat $^ | dd status=noxfer conv=notrunc of=$@
 
 run:
-	$(QEMU) -fda floppy.img
+	$(QEMU) -d guest_errors -fda floppy.img
 
 clean:
 	$(RM) -rf *.img *.iso
