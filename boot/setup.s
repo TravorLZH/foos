@@ -4,7 +4,7 @@
 SETUPSEG=0x1000
 CODESEG=0x8
 PMBASE=0x10000
-SYSSIZE=0x2000	# Max kernel size
+SYSSIZE=0x1E00	# Max kernel size
 
 setup:
 	movw	$SETUPSEG,%ax
