@@ -10,8 +10,12 @@ These are my little goals to make this OS
 - [x] Interrupts
 - [x] IRQs
 - [ ] Timer
-- [ ] Keyboard
+- [x] Keyboard
 - [x] VGA
+- [ ] Virtual Memory (Paging, Page Frame Allocator, etc.)
+- [ ] Porting `liballoc`
+- [ ] RAM Drive
+- [ ] Multitasking
 
 ## Prerequisites
 This OS is targeting x86 processors, so you need to have `i386-elf` toolchain
