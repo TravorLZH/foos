@@ -1,10 +1,9 @@
-#include <system.h>
 #include <stdio.h>
 #include <dev/tty.h>
 
 int _puts(const char *s)
 {
-	return tty_writestring(&kernel_tty,s);
+	return tty_writestring(tty_current(),s);
 }
 
 int puts(const char *s)
@@ -15,6 +14,6 @@ int puts(const char *s)
 
 int putchar(int c)
 {
-	tty_writechar(&kernel_tty,c);
+	tty_writechar(tty_current(),c);
 	return c;
 }
