@@ -23,8 +23,6 @@ all-subdirs:
 floppy.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
 	cat $^ > $@
 
-kernel/kernel.bin:
-
 run:
 	$(QEMU) -fda floppy.img
 
