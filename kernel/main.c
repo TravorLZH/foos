@@ -21,20 +21,20 @@ static void kbd_irq(struct registers regs)
 }
 
 static const char* floppy_type[]={
-	"No drive",
-	"360 KB 5.25 Drive",
-	"1.2 MB 5.25 Drive",
-	"720 KB 3.5 Drive",
-	"1.44 MB 3.5 Drive",
-	"2.88 MB 3.5 Drive"
+	"Not Applicable",
+	"360 KB 5.25\"",
+	"1.2 MB 5.25\"",
+	"720 KB 3.5\"",
+	"1.44 MB 3.5\"",
+	"2.88 MB 3.5\""
 };
 
 static void check_floppy(void)
 {
 	uint8_t val=cmos_read(0x10);
-	printf("Master FDC: ");
+	printf("Drive A: ");
 	puts(floppy_type[(val >> 4) & 0xF]);
-	printf("Slave FDC: ");
+	printf("Drive B: ");
 	puts(floppy_type[val & 0xF]);
 }
 
