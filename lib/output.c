@@ -2,10 +2,15 @@
 #include <stdio.h>
 #include <dev/tty.h>
 
+int _puts(const char *s)
+{
+	return tty_writestring(&kernel_tty,s);
+}
+
 int puts(const char *s)
 {
-	int ret=tty_writestring(&kernel_tty,s);
-	tty_writechar(&kernel_tty,'\n');
+	_puts(s);
+	putchar('\n');
 }
 
 int putchar(int c)
