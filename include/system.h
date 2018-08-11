@@ -8,5 +8,5 @@
 /* Common Variables */
 extern struct tty kernel_tty;
 /* Functions */
-extern int kernel_main(void);
+extern int kernel_main(void *reserved);
 #endif

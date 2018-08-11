@@ -27,5 +27,7 @@ enable_a20_fast:
 	outb	%al,$0x92
 a20_ok:
 	movl	$0x200000,%esp	# 1MB Stack (0x100000 - 0x200000)
+	push	$0
 	call	kernel_main
+	addl	$4,%esp
 	jmp	.
