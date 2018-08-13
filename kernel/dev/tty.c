@@ -201,8 +201,7 @@ static void kbd_irq(struct registers regs)
 		case ENTER:
 			ptr->kbd.special=0;
 			tty_writechar(tty_current(),'\n');
-			ptr->bufptr=ptr->buf;
-			ptr->kbd.flush=1;
+			ptr->kbd.flush=1;	// Tell read() to finish
 			break;
 		case BACKSPACE:
 			ptr->kbd.special=0;
@@ -244,5 +243,8 @@ size_t tty_read(struct tty *ptr,void *buf,size_t len)
 	ptr->bufptr=ptr->buf;
 	while(!ptr->kbd.flush);	// Wait until the enter is pressed
 	ptr->kbd.flush=0;
-	memcpy(buf,ptr->buf,len);
+	size_t size=(ptr->bufptr)-(ptr->buf);
+	ptr->bufptr=ptr->buf;
+	memcpy(buf,ptr->buf,size);
+	return size;
 }
