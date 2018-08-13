@@ -1,6 +1,8 @@
 #ifndef	TTY_H
 #define	TTY_H
 #include <inttypes.h>
+#define	VGA_CMD		0x3D4
+#define	VGA_DATA	(VGA_CMD+1)
 #define	VGA_BASE	(uint16_t*)0xB8000
 #define	VGA_WIDTH	80
 #define	VGA_HEIGHT	25
@@ -25,11 +27,9 @@ struct kbd_state{
 	uint8_t caps:1;
 	uint8_t irq:1;		// Used by TTY internal calls
 	uint8_t special:1;	// Used by TTY internal calls as well
-	uint8_t reserved:2;
+	uint8_t flush:1;	// Is the buffer flushed
+	uint8_t reserved:1;
 } __attribute__((packed));
-
-struct tty;
-typedef void (*flushhandler_t)(struct tty*);
 
 struct tty{
 	uint8_t color;
@@ -37,7 +37,6 @@ struct tty{
 	char buf[512];
 	char *bufptr;
 	struct kbd_state kbd;
-	flushhandler_t flush;
 } __attribute__((packed));
 
 extern struct tty *tty_current(void);
@@ -48,7 +47,8 @@ extern void tty_update_cursor(struct tty *ptr,uint16_t offset);
 extern void tty_writechar(struct tty *ptr,char c);
 extern size_t tty_write(struct tty *ptr,const void *data,size_t len);
 extern size_t tty_writestring(struct tty *ptr,const char *str);
-extern size_t tty_read(struct tty *ptr,char *buf,int size);
+extern size_t tty_read(struct tty *ptr,void *buf,size_t len);
+extern char tty_readchar(struct tty *ptr);
 extern int tty_create(struct tty *ptr);
 /* Initialization before creating TTY */
 extern int tty_init(void *reserved);
