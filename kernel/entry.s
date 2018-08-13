@@ -10,13 +10,11 @@ kernel_entry:
 	movw	%ax,%gs
 	movw	%ax,%ss
 check_a20:
-	pusha
 	movl	$0x100000,%edi
 	movl	$0x200000,%esi
 	movl	%esi,(%esi)
 	movl	%edi,(%edi)
 	cmpsd	# See if they are equal
-	popa
 	jne	a20_ok
 enable_a20_fast:
 	inb	$0x92,%al
