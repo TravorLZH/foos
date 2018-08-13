@@ -102,7 +102,7 @@ IRQ	15 47
 
 irq_stub:
 	pusha
-	movw	%ax,%ds
+	movw	%ds,%ax
 	pushl	%eax
 
 	movw	$DATASEG,%ax
