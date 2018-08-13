@@ -16,25 +16,25 @@ struct tty *tty_current(void)
 
 void tty_enable_cursor(uint8_t start,uint8_t end)
 {
-	outb(0x3D4,0xA);
-	outb(0x3D5,(inb(0x3D5) & 0xC0) | start);
-	outb(0x3D4,0xB);
-	outb(0x3D5,(inb(0x3D5) & 0xE0) | end);
+	outb(VGA_CMD,0xA);
+	outb(VGA_DATA,(inb(VGA_DATA) & 0xC0) | start);
+	outb(VGA_CMD,0xB);
+	outb(VGA_DATA,(inb(VGA_DATA) & 0xE0) | end);
 }
 
 void tty_disable_cursor(void)
 {
-	outb(0x3D5,0xA);
-	outb(0x3D5,0x20);
+	outb(VGA_DATA,0xA);
+	outb(VGA_DATA,0x20);
 }
 
 uint16_t tty_get_cursor(void)
 {
 	uint16_t ret;
-	outb(0x3D4,0xE);
-	ret=inb(0x3D5) << 8;
-	outb(0x3D4,0xF);
-	ret+=inb(0x3D5);
+	outb(VGA_CMD,0xE);
+	ret=inb(VGA_DATA) << 8;
+	outb(VGA_CMD,0xF);
+	ret+=inb(VGA_DATA);
 	return ret;
 }
 
@@ -45,10 +45,10 @@ void tty_update_cursor(struct tty *ptr,uint16_t offset)
 	}else{
 		current_tty=ptr;
 	}
-	outb(0x3D4,0xF);
-	outb(0x3D5,offset & 0xFF);
-	outb(0x3D4,0xE);
-	outb(0x3D5,(offset >> 8) & 0xFF);
+	outb(VGA_CMD,0xF);
+	outb(VGA_DATA,offset & 0xFF);
+	outb(VGA_CMD,0xE);
+	outb(VGA_DATA,(offset >> 8) & 0xFF);
 	ptr->cursor=offset;
 }
 
@@ -117,11 +117,11 @@ int tty_init(void *reserved)
 
 int tty_create(struct tty* ptr)
 {
+	memset(ptr,0,sizeof(struct tty));
 	current_tty=ptr;
 	ptr->bufptr=ptr->buf;
 	ptr->color=0x7;
 	ptr->cursor=tty_get_cursor();
-	ptr->flush=NULL;	// Let this be set by tty_read()
 	return 0;
 }
 /***************************************************************************
@@ -202,14 +202,12 @@ static void kbd_irq(struct registers regs)
 			ptr->kbd.special=0;
 			tty_writechar(tty_current(),'\n');
 			ptr->bufptr=ptr->buf;
-			if(ptr->flush!=NULL){
-				ptr->flush(ptr);
-			}
+			ptr->kbd.flush=1;
 			break;
 		case BACKSPACE:
 			ptr->kbd.special=0;
-			tty_writechar(tty_current(),'\b');
 			if(ptr->bufptr>ptr->buf){
+				tty_writechar(tty_current(),'\b');
 				*--(ptr->bufptr)='\0';
 			}
 			break;
@@ -217,8 +215,34 @@ static void kbd_irq(struct registers regs)
 			ptr->kbd.special=0;
 			char ch=_decode(scancode);
 			tty_writechar(tty_current(),ch);
-			*(ptr->bufptr++)=ch;
+			*(ptr->bufptr)=ch;
+			ptr->bufptr++;
 			*(ptr->bufptr)='\0';
 		}
 	}
+}
+
+char tty_readchar(struct tty *ptr)
+{
+	if(ptr==NULL){
+		ptr=tty_current();
+	}
+	current_tty=ptr;
+	while(!ptr->kbd.irq||ptr->kbd.special);
+	ptr->kbd.irq=0;
+	return _decode(inb(0x60));
+}
+
+size_t tty_read(struct tty *ptr,void *buf,size_t len)
+{
+	// Flush before anything
+	if(ptr==NULL){
+		ptr=current_tty;
+	}else{
+		current_tty=ptr;
+	}
+	ptr->bufptr=ptr->buf;
+	while(!ptr->kbd.flush);	// Wait until the enter is pressed
+	ptr->kbd.flush=0;
+	memcpy(buf,ptr->buf,len);
 }
