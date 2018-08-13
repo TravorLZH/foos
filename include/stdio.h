@@ -5,8 +5,13 @@
 #ifndef	BUFSIZ
 #define	BUFSIZ	512
 #endif
-extern int puts(const char *str);
+#ifndef	NULL
+#define	NULL	(void*)0
+#endif
 extern int putchar(int c);
+extern int puts(const char *str);
+extern int getchar(void);
+extern char *gets(char *buf);
 
 extern int printf(const char *fmt,...);
 extern int sprintf(char *str,const char *fmt,...);
