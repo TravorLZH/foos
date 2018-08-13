@@ -17,6 +17,15 @@ static void zero_division(struct registers regs)
 	hang();
 }
 
+static void general_protection(struct registers regs)
+{
+	printf("General Protection Fault on Segment: %d\n",regs.err_code);
+	printf("Stack: 0x%x\n",regs.esp);
+	printf("At: 0x%x\n",regs.eip);
+	printf("DS: 0x%x\n",regs.ds);
+	hang();
+}
+
 static void idt_flush(struct idt_desc *idtr)
 {
 	__asm__("lidt (%%eax)"::"a"((uint32_t)idtr));
@@ -77,14 +86,14 @@ void int_init(void)
 {
 	puts("Initializing Interrupt");
 	idt_init();
-	int_hook_handler(0,zero_division);
+	int_hook_handler(0x00,zero_division);
+	int_hook_handler(0x0D,general_protection);
 }
 
 void int_handler(struct registers regs)
 {
 	uint8_t color=kernel_tty.color;
 	kernel_tty.color=0x0F;
-	puts("Interrupt Called!");
 	if(handlers[regs.int_no]){
 		inthandler_t h=handlers[regs.int_no];
 		h(regs);
