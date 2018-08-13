@@ -36,7 +36,7 @@ int kernel_main(void *reserved)
 	check_floppy();
 	char buf[64];
 	printf("Enter stuff: ");
-	tty_read(&kernel_tty,buf,64);
+	gets(buf);
 	printf("You entered: %s\n",buf);
 	return 0;
 }
