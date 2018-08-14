@@ -3,6 +3,7 @@ AS_SOURCES=$(filter-out entry.s,$(wildcard *.s dev/*.s))
 OBJ=$(C_SOURCES:.c=.o) $(AS_SOURCES:.s=.o)
 CPPFLAGS=-I../include
 CFLAGS=-ffreestanding
+CFLAGS+=-Wno-packed-bitfield-compat
 CFLAGS+=$(CPPFLAGS)
 .PHONY:	all clean dep clean-dep
 
