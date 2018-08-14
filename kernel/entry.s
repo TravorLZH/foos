@@ -24,7 +24,7 @@ enable_a20_fast:
 	andb	$0xFE,%al
 	outb	%al,$0x92
 a20_ok:
-	movl	$0x200000,%esp	# 1MB Stack (0x100000 - 0x200000)
+	movl	$0x400000,%esp	# 1MB Stack (0x100000 - 0x400000)
 	push	$0
 	call	kernel_main
 	addl	$4,%esp
