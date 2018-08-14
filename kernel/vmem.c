@@ -66,9 +66,6 @@ int vmem_init(void *reserved)
 	tables[1].user=0;
 	tables[1].page=(size_t)kernel_heap >> PAGE_ALIGN;
 	int_hook_handler(0x0E,page_fault);
-	__asm__("movl %%eax,%%cr3"::"a"(tables));
-	__asm__("movl %%cr0,%%eax\n"
-		"orl $0x80000000,%%eax\n"
-		"movl %%eax,%%cr0":::"eax");
+	vmem_enable(tables);
 	return 0;
 }

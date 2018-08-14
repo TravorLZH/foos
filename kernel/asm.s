@@ -122,3 +122,15 @@ irq_stub:
 	popa
 	addl	$8,%esp
 	iret
+
+.global	vmem_enable
+vmem_enable:
+	pushl	%ebp
+	movl	%esp,%ebp
+	movl	8(%ebp),%eax
+	movl	%eax,%cr3
+	movl	%cr0,%eax
+	orl	$0x80000000,%eax
+	movl	%eax,%cr0
+	popl	%ebp
+	ret
