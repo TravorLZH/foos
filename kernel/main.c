@@ -1,13 +1,15 @@
 /* Entry of the kernel */
-#include <system.h>
+#include <foos/system.h>
+#include <foos/kmalloc.h>
 #include <dev/tty.h>
 #include <asm/ioports.h>
 #include <asm/cmos.h>
 #include <cpu/interrupt.h>
+#include <cpu/memory.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-struct tty kernel_tty;
+struct tty *kernel_tty=NULL;
 
 static const char* floppy_type[]={
 	"Not Applicable",
@@ -29,14 +31,14 @@ static void check_floppy(void)
 
 int kernel_main(void *reserved)
 {
-	tty_init(NULL);
-	tty_create(&kernel_tty);
+	kernel_tty=(struct tty*)kmalloc(sizeof(struct tty));
+	tty_create(kernel_tty);
 	int_init();
+	tty_init(NULL);
+	vmem_init(NULL);
 	int_enable();
 	check_floppy();
-	char buf[64];
-	printf("Enter stuff: ");
-	gets(buf);
-	printf("You entered: %s\n",buf);
+	char *addr=(char*)0x900000;
+	char x=*addr;
 	return 0;
 }
