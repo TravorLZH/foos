@@ -1,13 +1,16 @@
-#include <system.h>
+#include <foos/system.h>
+#include <foos/kmalloc.h>
 #include <cpu/interrupt.h>
 #include <dev/pic.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-static struct idt_entry entries[256];
+static struct idt_entry *entries=NULL;
+static const size_t entries_sz=sizeof(struct idt_entry)*256;
 static struct idt_desc idtr;
-static inthandler_t handlers[256];
+static inthandler_t *handlers=NULL;
+static const size_t handlers_sz=sizeof(inthandler_t)*256;
 
 static void irq_init(void);
 
@@ -43,9 +46,16 @@ static void idt_hook(uint8_t num,void *fp,uint16_t segment,uint8_t flags)
 
 static void idt_init(void)
 {
-	idtr.limit=sizeof(entries)-1;
-	idtr.base=&entries;
-	memset(&entries,0,sizeof(entries));
+	if(entries==NULL){
+		entries=kmalloc(entries_sz);
+		memset(entries,0,entries_sz);
+	}
+	if(handlers==NULL){
+		handlers=kmalloc(handlers_sz);
+		memset(handlers,0,handlers_sz);
+	}
+	idtr.limit=entries_sz-1;
+	idtr.base=entries;
 	idt_hook(0,int0,CODESEG,0x8E);
 	idt_hook(1,int1,CODESEG,0x8E);
 	idt_hook(2,int2,CODESEG,0x8E);
@@ -92,8 +102,8 @@ void int_init(void)
 
 void int_handler(struct registers regs)
 {
-	uint8_t color=kernel_tty.color;
-	kernel_tty.color=0x0F;
+	uint8_t color=kernel_tty->color;
+	kernel_tty->color=0x0F;
 	if(handlers[regs.int_no]){
 		inthandler_t h=handlers[regs.int_no];
 		h(regs);
@@ -101,11 +111,11 @@ void int_handler(struct registers regs)
 		char tmp[4];
 		tmp[3]='\0';
 		itoa(regs.int_no,tmp);
-		tty_writestring(&kernel_tty,"Unhandled interrupt ");
-		tty_writestring(&kernel_tty,tmp);
+		tty_writestring(NULL,"Unhandled interrupt ");
+		tty_writestring(NULL,tmp);
 		putchar('\n');
 	}
-	kernel_tty.color=color;
+	kernel_tty->color=color;
 }
 
 void int_hook_handler(uint8_t no,inthandler_t handler)
@@ -138,7 +148,7 @@ static void irq_init(void)
 void irq_handler(struct registers regs)
 {
 	pic_send_eoi(regs.int_no-0x20);
-	if(handlers[regs.int_no]){
+	if(handlers[regs.int_no]!=NULL){
 		inthandler_t h=handlers[regs.int_no];
 		h(regs);
 	}
