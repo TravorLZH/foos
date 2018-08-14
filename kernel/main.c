@@ -2,6 +2,7 @@
 #include <foos/system.h>
 #include <foos/kmalloc.h>
 #include <dev/tty.h>
+#include <dev/pit.h>
 #include <asm/ioports.h>
 #include <asm/cmos.h>
 #include <cpu/interrupt.h>
@@ -31,14 +32,15 @@ static void check_floppy(void)
 
 int kernel_main(void *reserved)
 {
+	struct pit_config conf;
+	conf.frequency=1000;	// Setup PIT at 1000 Hz
 	kernel_tty=(struct tty*)kmalloc(sizeof(struct tty));
 	tty_create(kernel_tty);
 	int_init();
 	tty_init(NULL);
+	pit_init(&conf);
 	vmem_init(NULL);
 	int_enable();
 	check_floppy();
-	char *addr=(char*)0x900000;
-	char x=*addr;
 	return 0;
 }
