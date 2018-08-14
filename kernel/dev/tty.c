@@ -1,9 +1,9 @@
 #include <dev/tty.h>
+#include <foos/system.h>
 #include <cpu/interrupt.h>
 #include <asm/ioports.h>
 #include <inttypes.h>
 #include <string.h>
-#include <system.h>
 
 static struct tty *current_tty=NULL;	// Caching the last-used TTY structure
 
@@ -110,13 +110,13 @@ size_t tty_writestring(struct tty *ptty,const char *string)
 
 int tty_init(void *reserved)
 {
-	tty_enable_cursor(0xE,0xF);
 	int_hook_handler(0x21,kbd_irq);
 	return 0;
 }
 
 int tty_create(struct tty* ptr)
 {
+	tty_enable_cursor(0xE,0xF);
 	memset(ptr,0,sizeof(struct tty));
 	current_tty=ptr;
 	ptr->bufptr=ptr->buf;
