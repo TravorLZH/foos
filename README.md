@@ -13,7 +13,7 @@ These are my little goals to make this OS
 - [x] Keyboard
 - [x] VGA
 - [x] Virtual Memory Management
-- [ ] Physical Memory Management (Frames, Page Frame Allocator)
+- [x] Physical Memory Management (Frames, Page Frame Allocator)
 - [ ] Porting `liballoc` (malloc)
 - [ ] RAM Drive
 - [ ] Floppy Disk Controller
