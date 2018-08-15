@@ -34,12 +34,10 @@ int vmem_init(void *reserved)
 		tables=kmalloca(DIR_SIZE,PAGE_ALIGN);
 		memset(tables,0,DIR_SIZE);
 	}
-	size_t i,j;
-	for(i=0;i<1024;i++){
-		for(j=0;j<1024;j++){
-			void *addr=(void*)((i<<22)+(j<<PAGE_ALIGN));
-			pmem_mapaddr(addr,addr,tables,P_WRITABLE);
-		}
+	size_t i;
+	for(i=0;i<NPAGES;i++){
+		void *addr=(void*)(i<<PAGE_ALIGN);
+		pmem_mapaddr(addr,addr,tables,P_WRITABLE);
 	}
 	int_hook_handler(0x0E,page_fault);
 	vmem_enable(tables);
