@@ -1,4 +1,6 @@
 # Foos
+![https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)
+
 Another OS project because my TravorOS's code is too messy
 
 ## Plan
