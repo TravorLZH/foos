@@ -202,13 +202,17 @@ static void kbd_irq(struct registers regs)
 			ptr->kbd.special=0;
 			tty_writechar(tty_current(),'\n');
 			ptr->kbd.flush=1;	// Tell read() to finish
+			ptr->tmp=ptr->bufptr;	// Save the buf pointer
+			ptr->bufptr=ptr->buf;
 			break;
 		case BACKSPACE:
 			ptr->kbd.special=0;
-			if(ptr->bufptr>ptr->buf){
-				tty_writechar(tty_current(),'\b');
-				*--(ptr->bufptr)='\0';
+			if(ptr->bufptr<=ptr->buf){
+				ptr->bufptr=ptr->buf;
+				break;
 			}
+			tty_writechar(tty_current(),'\b');
+			*--(ptr->bufptr)='\0';
 			break;
 		default:
 			ptr->kbd.special=0;
@@ -243,8 +247,8 @@ size_t tty_read(struct tty *ptr,void *buf,size_t len)
 	ptr->bufptr=ptr->buf;
 	while(!ptr->kbd.flush);	// Wait until the enter is pressed
 	ptr->kbd.flush=0;
-	size_t size=(ptr->bufptr)-(ptr->buf);
-	ptr->bufptr=ptr->buf;
+	size_t size=(ptr->tmp)-(ptr->buf);
+	ptr->tmp=ptr->buf;
 	memcpy(buf,ptr->buf,size);
 	return size;
 }
