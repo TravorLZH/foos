@@ -33,6 +33,7 @@ int vmem_init(void *reserved)
 	if(tables==NULL){
 		tables=kmalloca(DIR_SIZE,PAGE_ALIGN);
 		memset(tables,0,DIR_SIZE);
+		__asm__("movl %%eax,%%cr3"::"a"(tables));
 	}
 	size_t i;
 	for(i=0;i<NPAGES;i++){
@@ -59,4 +60,49 @@ uint32_t *vmem_get(void *addr,void *dirptr)
 		dir[table_i]=(size_t)table | P_PRESENT | P_WRITABLE;
 	}
 	return table+offset;
+}
+
+void vmem_free(void *addr,size_t n)
+{
+	size_t i;
+	for(i=0;i<n;i++){
+		uint32_t *pg=vmem_get(addr+i*PAGE_SIZE,NULL);
+		pmem_clear((void*)*pg);
+		*pg&=~P_PRESENT;
+	}
+}
+
+void *vmem_alloc(size_t n)
+{
+	if(n<=0){
+		return NULL;
+	}
+	char *addr=NULL,*tmp=NULL;
+	uint32_t *page=NULL;
+	size_t i;
+	char found=1;
+	while(addr<(char*)MAPPED_MEMORY){
+		page=vmem_get(addr,NULL);
+		if(!(*page & P_PRESENT)){
+			tmp=addr;
+			for(i=1;i<n;i++){
+				tmp+=PAGE_SIZE;
+				page=vmem_get(tmp,NULL);
+				if(*page & P_PRESENT){
+					found=0;
+					break;
+				}
+			}
+			if(found){
+				for(i=0;i<n;i++){
+					pmem_mapaddr(addr+i*PAGE_SIZE,NULL,
+							P_WRITABLE,NULL);
+				}
+				return addr;
+			}
+			addr+=n*PAGE_SIZE;
+		}
+		addr+=PAGE_SIZE;
+	}
+	return NULL;
 }
