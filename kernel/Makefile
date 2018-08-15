@@ -3,7 +3,6 @@ AS_SOURCES=$(filter-out entry.s,$(wildcard *.s dev/*.s))
 OBJ=$(C_SOURCES:.c=.o) $(AS_SOURCES:.s=.o)
 CPPFLAGS=-I../include
 CFLAGS=-ffreestanding
-CFLAGS+=-m32
 CFLAGS+=-Wno-packed-bitfield-compat
 CFLAGS+=$(CPPFLAGS)
 LDFLAGS+=-melf_i386
@@ -12,10 +11,10 @@ LDFLAGS+=-melf_i386
 all:	kernel.bin
 
 %.o:	%.s
-	$(AS) -o $@ $<
+	$(AS) --32 -o $@ $<
 
 %.o:	%.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -m32 -c -o $@ $< $(CFLAGS)
 
 kernel.bin:	entry.o $(OBJ) ../lib/libc.a
 	$(LD) $(LDFLAGS) -Tlink.ld -o $@ $^ --oformat=binary

@@ -12,7 +12,7 @@ all:	libc.a
 	$(AS) -o $@ $<
 
 %.o:	%.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -m32 -c -o $@ $< $(CFLAGS)
 
 libc.a:	$(OBJ)
 	$(AR) rc $@ $^

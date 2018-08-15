@@ -6,7 +6,7 @@ CC=i386-elf-gcc
 AR=i386-elf-ar
 RM=rm
 QEMU=qemu-system-i386
-LDFLAGS=--oformat=binary -Ttext=0
+LDFLAGS=-melf_i386 --oformat=binary -Ttext=0
 
 .PHONY:	all all-subdirs run clean dep clean-dep
 
@@ -17,7 +17,7 @@ all-subdirs:
 	$(MAKE) -C kernel CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
 
 %.bin:	%.s
-	$(AS) -o $(<:.s=.o) $<
+	$(AS) --32 -o $(<:.s=.o) $<
 	$(LD) $(LDFLAGS) -o $@ $(<:.s=.o)
 
 floppy.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
