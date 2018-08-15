@@ -33,6 +33,7 @@ clean:
 	$(RM) -rf boot/*.bin boot/*.o
 	$(MAKE) -C kernel $@ RM=$(RM)
 	$(MAKE) -C lib $@ RM=$(RM)
+	$(MAKE) -C liballoc $@
 
 dep:
 	$(MAKE) -C kernel $@ RM=$(RM)
