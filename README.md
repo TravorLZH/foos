@@ -14,7 +14,7 @@ These are my little goals to make this OS
 - [x] VGA
 - [x] Virtual Memory Management
 - [x] Physical Memory Management (Frames, Page Frame Allocator)
-- [ ] Porting `liballoc` (malloc)
+- [x] Porting `liballoc` (malloc)
 - [ ] RAM Drive
 - [ ] Floppy Disk Controller
 - [ ] Loadable Kernel Module
