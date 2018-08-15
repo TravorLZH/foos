@@ -6,6 +6,8 @@ CODESEG=0x8
 PMBASE=0x10000
 SYSSIZE=0x4000	# Max kernel size
 
+.globl	_start
+_start:
 setup:
 	movw	$SETUPSEG,%ax
 	movw	%ax,%ds

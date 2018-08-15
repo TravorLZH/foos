@@ -5,6 +5,8 @@ SETUPSEG=0x1000
 SYSSIZE=0x4000
 SETUP_SECTORS=1+(SYSSIZE>>9)
 
+.globl	_start
+_start:
 boot:
 	movw	$BOOTSEG,%ax
 	cli
