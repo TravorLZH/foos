@@ -36,6 +36,7 @@ struct tty{
 	uint8_t cursor;
 	char buf[512];
 	char *bufptr;
+	char *tmp;
 	struct kbd_state kbd;
 } __attribute__((packed));
 
