@@ -1,41 +1,28 @@
 #ifndef	MEMORY_H
 #define	MEMORY_H
 #include <inttypes.h>
-#define	TABLE_ADDR(pagtab)	(struct page*)(pagtab.page << 12)
-#define	FRAME_ADDR(pag)		(pag.frame << 12)
 
 #define	MAPPED_MEMORY	0x800000
 #define	PAGE_SIZE	0x1000
 #define	NPAGES		(MAPPED_MEMORY/PAGE_SIZE)
 
-#define	P_WRITABLE	0x1
-#define	P_USER		0x2
-
-struct page{
-	uint8_t present:1;
-	uint8_t writable:1;
-	uint8_t user:1;
-	uint8_t accessed:1;
-	uint8_t dirty:1;
-	uint8_t unused:7;
-	uint32_t frame:20;
-} __attribute__((packed));
-
-struct page_table{
-	uint8_t present:1;
-	uint8_t writable:1;
-	uint8_t user:1;
-	uint8_t accessed:1;
-	uint8_t unused:8;
-	uint32_t page:20;
-} __attribute__((packed));
+#define	P_PRESENT	0x1
+#define	P_WRITABLE	0x2
+#define	P_USER		0x4
+#define	P_ACCESSED	0x8
+#define	P_DIRTY		0x10	/* Only used by page table entry */
 
 extern int vmem_init(void *reserved);
-extern struct page *vmem_get(void *addr,struct page_table *dir);
+extern uint32_t *vmem_get(void *addr,void *dir);
+/* Used by 3rd party memory allocator */
+extern void *vmem_alloc(uint32_t pages);
+extern void vmem_free(uint32_t pages);
+
+extern int pmem_init(void *reserved);
 extern void pmem_set(void *addr);
 extern void pmem_clear(void *addr);
 extern int pmem_test(void *addr);
-extern int pmem_map(struct page *pg,void *phys,uint8_t flags);
-extern int pmem_mapaddr(void *addr,void *phys,struct page_table*,uint8_t);
-extern int pmem_init(void *reserved);
+extern int pmem_map(uint32_t *pg,void *phys,uint32_t flags);
+extern int pmem_mapaddr(void *addr,void *phys,uint32_t flags,uint32_t *dir);
+extern void *pmem_get_free(void);
 #endif
