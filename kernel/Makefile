@@ -3,8 +3,10 @@ AS_SOURCES=$(filter-out entry.s,$(wildcard *.s dev/*.s))
 OBJ=$(C_SOURCES:.c=.o) $(AS_SOURCES:.s=.o)
 CPPFLAGS=-I../include
 CFLAGS=-ffreestanding
+CFLAGS+=-m32
 CFLAGS+=-Wno-packed-bitfield-compat
 CFLAGS+=$(CPPFLAGS)
+LDFLAGS+=-melf_i386
 .PHONY:	all clean dep clean-dep
 
 all:	kernel.bin
@@ -16,7 +18,7 @@ all:	kernel.bin
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 kernel.bin:	entry.o $(OBJ) ../lib/libc.a
-	$(LD) -Tlink.ld -o $@ $^ --oformat=binary
+	$(LD) $(LDFLAGS) -Tlink.ld -o $@ $^ --oformat=binary
 
 clean:
 	$(RM) -rf *.o *.bin
