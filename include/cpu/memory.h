@@ -4,7 +4,7 @@
 #define	TABLE_ADDR(pagtab)	(struct page*)(pagtab.page << 12)
 #define	FRAME_ADDR(pag)		(pag.frame << 12)
 
-#define	MAPPED_MEMORY	0x80000000
+#define	MAPPED_MEMORY	0x800000
 #define	PAGE_SIZE	0x1000
 #define	NPAGES		(MAPPED_MEMORY/PAGE_SIZE)
 
