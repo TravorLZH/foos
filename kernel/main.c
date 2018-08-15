@@ -39,6 +39,7 @@ int kernel_main(void *reserved)
 	int_init();
 	tty_init(NULL);
 	pit_init(&conf);
+	pmem_init(NULL);
 	vmem_init(NULL);
 	int_enable();
 	check_floppy();
