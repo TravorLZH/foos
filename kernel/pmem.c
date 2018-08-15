@@ -32,19 +32,29 @@ int pmem_init(void *reserved)
 	frame_set=(uint32_t*)kmalloc(PAGE_SIZE);
 }
 
-int pmem_map(struct page *pg,void *physaddr,uint8_t flags)
+int pmem_map(uint32_t *pg,void *physaddr,uint32_t flags)
 {
-	pg->present=1;
-	pg->writable=flags & 0x1;
-	pg->user=(flags & 0x2) >> 1;
-	pg->frame=(size_t)physaddr >> PAGE_ALIGN;
+	if(physaddr==NULL){
+		physaddr=pmem_get_free();
+	}
+	*pg|=(size_t)physaddr | P_PRESENT | flags;
 	pmem_set(physaddr);
 	return 0;
 }
 
-int pmem_mapaddr(void *virtaddr,void *physaddr,struct page_table *dir,
-		uint8_t flags)
+int pmem_mapaddr(void *virtaddr,void *physaddr,uint32_t flags,uint32_t *dir)
 {
-	struct page *pg=vmem_get(virtaddr,dir);
+	uint32_t *pg=vmem_get(virtaddr,dir);
 	return pmem_map(pg,physaddr,flags);
+}
+
+void *pmem_get_free(void)
+{
+	char *addr=(char*)0x0;
+	for(;addr<(char*)MAPPED_MEMORY;addr+=PAGE_SIZE){
+		if(!pmem_test(addr)){	// If it is a free frame
+			return addr;
+		}
+	}
+	return NULL;
 }

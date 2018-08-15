@@ -5,12 +5,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#define	TABLE_SIZE	1024*sizeof(struct page)
-#define	DIR_SIZE	1024*sizeof(struct page_table)
+#define	TABLE_SIZE	1024*sizeof(uint32_t)
+#define	DIR_SIZE	1024*sizeof(uint32_t)
 
-struct page_table *tables=NULL;
+uint32_t *tables=NULL;
 
-extern void vmem_enable(struct page_table *dir);
+extern void vmem_enable(uint32_t *dir);
 
 static void page_fault(struct registers regs)
 {
@@ -36,30 +36,27 @@ int vmem_init(void *reserved)
 	}
 	size_t i;
 	for(i=0;i<NPAGES;i++){
-		void *addr=(void*)(i<<PAGE_ALIGN);
-		pmem_mapaddr(addr,addr,tables,P_WRITABLE);
+		void *addr=(void*)(i*PAGE_SIZE);
+		pmem_mapaddr(addr,NULL,P_WRITABLE,tables);
 	}
 	int_hook_handler(0x0E,page_fault);
 	vmem_enable(tables);
 	return 0;
 }
 
-struct page *vmem_get(void *addr,struct page_table *dir)
+uint32_t *vmem_get(void *addr,void *dirptr)
 {
+	uint32_t *dir=(uint32_t*)dirptr;
 	if(dir==NULL){
 		__asm__("movl %%cr3,%%eax":"=a"(dir));
 	}
 	size_t tmp=(size_t)addr/PAGE_SIZE;
 	size_t table_i=tmp/1024;
 	size_t offset=tmp%1024;
-	struct page *table=(struct page*)(dir[table_i].page << PAGE_ALIGN);
-	if(!dir[table_i].present || table==NULL){
-		table=(struct page*)
-			kmalloca(TABLE_SIZE,PAGE_ALIGN);
-		dir[table_i].present=1;
-		dir[table_i].writable=0;
-		dir[table_i].user=0;
-		dir[table_i].page=(size_t)table >> PAGE_ALIGN;
+	uint32_t *table=(uint32_t*)(dir[table_i] & (0xFFFFFFFF << PAGE_ALIGN));
+	if(!(dir[table_i] & P_PRESENT) || table==NULL){
+		table=(uint32_t*)kmalloca(TABLE_SIZE,PAGE_ALIGN);
+		dir[table_i]=(size_t)table | P_PRESENT | P_WRITABLE;
 	}
 	return table+offset;
 }
