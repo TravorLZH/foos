@@ -2,7 +2,7 @@
 #define	MEMORY_H
 #include <inttypes.h>
 
-#define	MAPPED_MEMORY	0x800000
+#define	MAPPED_MEMORY	0x1000000
 #define	PAGE_SIZE	0x1000
 #define	NPAGES		(MAPPED_MEMORY/PAGE_SIZE)
 
