@@ -36,7 +36,7 @@ int vmem_init(void *reserved)
 		__asm__("movl %%eax,%%cr3"::"a"(tables));
 	}
 	size_t i;
-	for(i=0;i<NPAGES;i++){
+	for(i=0;i<2048;i++){
 		void *addr=(void*)(i*PAGE_SIZE);
 		pmem_mapaddr(addr,NULL,P_WRITABLE,tables);
 	}
@@ -74,14 +74,13 @@ void vmem_free(void *addr,size_t n)
 
 void *vmem_alloc(size_t n)
 {
-	if(n<=0){
-		return NULL;
-	}
-	char *addr=NULL,*tmp=NULL;
+	char *addr=(char*)0x0;
+	char *end=(char*)MAPPED_MEMORY;
+	char *tmp=NULL;
 	uint32_t *page=NULL;
 	size_t i;
 	char found=1;
-	while(addr<(char*)MAPPED_MEMORY){
+	while(end-addr){
 		page=vmem_get(addr,NULL);
 		if(!(*page & P_PRESENT)){
 			tmp=addr;
