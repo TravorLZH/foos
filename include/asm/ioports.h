@@ -2,15 +2,12 @@
 #define	IOPORTS_H
 #include <inttypes.h>
 
-static inline void outb(uint16_t port,uint8_t val)
-{
-	__asm__("outb %0,%1"::"a"(val),"Nd"(port));
-}
+#define	outb(port,val) \
+	__asm__("outb %0,%1"::"a"((uint8_t)(val)),"Nd"((uint16_t)(port)));
 
-static inline uint8_t inb(uint16_t port)
-{
-	uint8_t ret;
-	__asm__("inb %1,%0":"=a"(ret):"Nd"(port));
-	return ret;
-}
+#define	inb(port) ({ \
+		uint8_t ret; \
+		__asm__("inb %1,%0":"=a"(ret):"Nd"((uint16_t)(port))); \
+		ret; \
+		})
 #endif
