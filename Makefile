@@ -14,7 +14,7 @@ all:	all-subdirs floppy.img
 
 all-subdirs:
 	$(MAKE) -C libc CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
-	$(MAKE) -C liballoc liballoc.a CC=$(CC) CFLAGS=-I../include AR=$(AR)
+	$(MAKE) -C liballoc compile CC=$(CC) CFLAGS=-I../include AR=$(AR)
 	$(MAKE) -C kernel CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
 
 %.bin:	%.s

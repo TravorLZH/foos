@@ -10,7 +10,10 @@ typedef	unsigned short	uint16_t;
 typedef	unsigned int	uint32_t;
 typedef	unsigned long long	uint64_t;
 
+#ifndef	_HAVE_SIZE_T
+#define	_HAVE_SIZE_T
 typedef	unsigned long	size_t;
+#endif
 
 /* Boolean type */
 #define	true	1
