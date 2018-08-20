@@ -1,10 +1,11 @@
 .code16
 .text
 # Constant
-SETUPSEG=0x1000
+SETUPSEG=0x9020
 CODESEG=0x8
-PMBASE=0x10000
-SYSSIZE=0x4000	# Max kernel size
+PMBASE=0x90200
+SYSSEG=0x1000
+SYSSIZE=0x3000
 
 .globl	_start
 _start:
@@ -13,23 +14,25 @@ setup:
 	movw	%ax,%ds
 	movw	$welcome_setup,%si
 	call	print_string
-move_system:
-	cli
-	movw	$0x200,%ax
-	movw	%ax,%si
+move_system:	# From 1000:0000 to 0000:0000
+	pushw	%ds
+	movw	$SYSSEG,%ax
+	movw	%ax,%ds
 	xorw	%ax,%ax
-	movw	%ax,%di
 	movw	%ax,%es
+	xorw	%si,%si
+	xorw	%di,%di
 	movw	$SYSSIZE,%cx
-	cld
-	rep	movsb
+	rep
+	movsb
+	popw	%ds
 switch_pm:
 	lgdt	gdt_descriptor
 	movl	%cr0,%eax
 	orl	$0x1,%eax
 	movl	%eax,%cr0
 	ljmp	$CODESEG,$0x0
-.code16
+
 # Useful 16-bit functions
 print_string:
 	movb	$0x0E,%ah
@@ -58,8 +61,9 @@ gdt_data:
 	# Access: 10010010 (0x92), Flags: 1100 (0xC), Limit: 1111 (0xF)
 	.byte	0x92,0xCF
 	.byte	0x0
+gdt_end:
 gdt_descriptor:
-	.word	0x17	# 3 entries
+	.word	gdt_end - gdt_start - 1	# 3 entries
 	.long	gdt_start+PMBASE
 # Strings
 welcome_setup:
