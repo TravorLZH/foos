@@ -5,14 +5,14 @@
 #define	FDC1	0x3F0
 #define	FDC2	0x370
 /* Offset from base */
-#define	FDC_STATUSA	(floppy_fdc()|0x00)
-#define	FDC_STATUSB	(floppy_fdc()|0x01)
-#define	FDC_DOR		(floppy_fdc()|0x02)	/**< Digital Output Reg */
-#define	FDC_MSR		(floppy_fdc()|0x04)	/**< Main Status Reg */
-#define	FDC_DSR		(floppy_fdc()|0x04)	/**< Datarate Select Reg */
-#define	FDC_FIFO	(floppy_fdc()|0x05)
-#define	FDC_DIR		(floppy_fdc()|0x07)	/* Read (AT) */
-#define	FDC_CCR		(floppy_fdc()|0x07)	/* Write (AT) */
+#define	FDC_STATUSA	0x00
+#define	FDC_STATUSB	0x01
+#define	FDC_DOR		0x02	/**< Digital Output Reg */
+#define	FDC_MSR		0x04	/**< Main Status Reg */
+#define	FDC_DSR		0x04	/**< Datarate Select Reg */
+#define	FDC_FIFO	0x05
+#define	FDC_DIR		0x07	/* Read (AT) */
+#define	FDC_CCR		0x07	/* Write (AT) */
 /* Bits in DOR */
 #define	DOR_CONTROLLER	0x04	/**< 1= Controller Enabled */
 #define	DOR_DMA		0x08	/**< DMA and IRQ channel (1 for enabled) */
@@ -46,26 +46,22 @@
 #define	FLP_MULTITRACK	0x80
 #define	FLP_MFM		0x40	/**< Always set this */
 
-struct floppy_conf{
-	uint8_t fdc;	/**<
+struct floppy{
+	uint16_t fdc;	/**< Which FDC should we use */
 };
 
-/** Get the current FDC no.
- * @return Either of FDC1_BASE or FDC2_BASE
- */
-extern uint8_t floppy_fdc(void);
 /** Reset the controller */
-extern int floppy_reset(void);
+extern int floppy_reset(struct floppy *flp);
 /** Wait until the floppy is ready for reading or writing */
-extern void floppy_ready(void);
+extern void floppy_ready(struct floppy *flp);
 /** Write command to FDC */
-extern void floppy_send_command(uint8_t cmd);
+extern void floppy_send_command(struct floppy *flp,uint8_t cmd);
 /** Read data from FDC */
-extern uint8_t floppy_read_data(void);
+extern uint8_t floppy_read_data(struct floppy *flp);
 /** Check status */
-extern void floppy_check_interrupt(uint8_t *st0,uint8_t *cyl);
+extern void floppy_check_interrupt(struct floppy*,uint8_t *st0,uint8_t *cyl);
 /** Recalibrate floppy */
-extern int floppy_calibrate(void);
+extern int floppy_calibrate(struct floppy *flp);
 /** Initialization of FDC */
 extern int floppy_init(void *reserved);
 #endif
