@@ -1,4 +1,4 @@
-C_SOURCES=$(filter-out dev/pit.c,$(wildcard *.c dev/*.c))
+C_SOURCES=$(wildcard *.c dev/*.c)
 AS_SOURCES=$(filter-out entry.s,$(wildcard *.s dev/*.s))
 OBJ=$(C_SOURCES:.c=.o) $(AS_SOURCES:.s=.o)
 CPPFLAGS=-I../include

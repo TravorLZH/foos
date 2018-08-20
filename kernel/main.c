@@ -2,6 +2,7 @@
 #include <foos/system.h>
 #include <foos/kmalloc.h>
 #include <dev/tty.h>
+#include <dev/pit.h>
 #include <asm/ioports.h>
 #include <asm/cmos.h>
 #include <cpu/interrupt.h>
@@ -37,6 +38,7 @@ int kernel_main(void *reserved)
 	tty_init(NULL);
 	pmem_init(NULL);
 	vmem_init(NULL);
+	pit_init(1000);
 	int_enable();
 	check_floppy();
 	return 0;

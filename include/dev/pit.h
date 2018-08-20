@@ -29,10 +29,8 @@
 #define	PIT_BCD	1	/* Use Binary */
 /* Default frequency of PIT (1193180 Hz) */
 #define	PIT_FREQUENCY	1193180
-/* Configuration of PIT */
-struct pit_config{
-	uint32_t frequency;
-};
-
-extern int pit_init(void *config);
+/** Initialize PIT
+ * @param freq:	Frequency in integer form
+ */
+extern int pit_init(uint32_t freq);
 #endif
