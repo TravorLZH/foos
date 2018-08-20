@@ -29,11 +29,6 @@ static void general_protection(struct registers regs)
 	hang();
 }
 
-static void idt_flush(struct idt_desc *idtr)
-{
-	__asm__("lidt (%%eax)"::"a"((uint32_t)idtr));
-}
-
 static void idt_hook(uint8_t num,void *fp,uint16_t segment,uint8_t flags)
 {
 	uint32_t base=(uint32_t)fp;
@@ -89,7 +84,7 @@ static void idt_init(void)
 	idt_hook(30,int30,CODESEG,0x8E);
 	idt_hook(31,int31,CODESEG,0x8E);
 	irq_init();
-	idt_flush(&idtr);
+	__asm__("lidt (%%eax)"::"a"((uint32_t)&idtr));
 }
 
 void int_init(void)
