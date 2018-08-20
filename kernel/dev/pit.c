@@ -15,9 +15,8 @@ static void pit_irq(struct registers regs)
 	}
 }
 
-int pit_init(void *ptr)
+int pit_init(uint32_t freq)
 {
-	uint32_t freq=(uint32_t)ptr;
 	uint32_t divisor=1193180 / freq;
 	uint8_t low=(uint8_t)(divisor & 0xFF);
 	uint8_t high=(uint8_t)((divisor >> 8) & 0xFF);
