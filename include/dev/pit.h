@@ -29,6 +29,11 @@
 #define	PIT_BCD	1	/* Use Binary */
 /* Default frequency of PIT (1193180 Hz) */
 #define	PIT_FREQUENCY	1193180
+/** Wait for several ticks
+ * @param ticks:	How many ticks to wait
+ * @return negative on error (with errno set), 0 on success
+ */
+extern int pit_delay(uint32_t ticks);
 /** Initialize PIT
  * @param freq:	Frequency in integer form
  */

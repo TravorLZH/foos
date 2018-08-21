@@ -2,16 +2,30 @@
 #include <cpu/interrupt.h>
 #include <asm/ioports.h>
 #include <stdio.h>
+#include <errno.h>
 
 static int stuff=0;
+static char busy=0;
+static uint32_t ticks=0;
+
+int pit_delay(uint32_t _ticks)
+{
+	if(busy){
+		errno=EBUSY;
+		return -errno;
+	}
+	ticks=_ticks;
+	busy=1;
+	while(busy);
+	return 0;
+}
 
 static void pit_irq(struct registers regs)
 {
-	if(stuff<=0){
-		puts("PIT IRQ");
-		stuff=1000;
+	if(busy && ticks>0){
+		ticks--;
 	}else{
-		stuff--;
+		busy=0;
 	}
 }
 

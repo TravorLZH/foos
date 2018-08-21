@@ -41,5 +41,11 @@ int kernel_main(void *reserved)
 	pit_init(1000);
 	int_enable();
 	check_floppy();
+	int ret=pit_delay(4000);
+	if(!ret){
+		puts("4 seconds!");
+	}else{
+		puts("error on delaying");
+	}
 	return 0;
 }
