@@ -46,9 +46,9 @@ extern void tty_disable_cursor(void);
 extern uint16_t tty_get_cursor(void);
 extern void tty_update_cursor(struct tty *ptr,uint16_t offset);
 extern void tty_writechar(struct tty *ptr,char c);
-extern size_t tty_write(struct tty *ptr,const void *data,size_t len);
+extern size_t tty_write(struct tty *ptr,const char *data,size_t len);
 extern size_t tty_writestring(struct tty *ptr,const char *str);
-extern size_t tty_read(struct tty *ptr,void *buf,size_t len);
+extern size_t tty_read(struct tty *ptr,char *buf,size_t len);
 extern char tty_readchar(struct tty *ptr);
 extern int tty_create(struct tty *ptr);
 /* Initialization before creating TTY */

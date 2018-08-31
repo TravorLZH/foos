@@ -1,11 +1,15 @@
 #include <dev/tty.h>
 #include <foos/system.h>
+#include <foos/kmalloc.h>
+#include <foos/device.h>
 #include <cpu/interrupt.h>
 #include <asm/ioports.h>
 #include <inttypes.h>
 #include <string.h>
+#include <errno.h>
 
 static struct tty *current_tty=NULL;	// Caching the last-used TTY structure
+char init=0;
 
 static void kbd_irq(struct registers regs);
 
@@ -52,9 +56,8 @@ void tty_update_cursor(struct tty *ptr,uint16_t offset)
 	ptr->cursor=offset;
 }
 
-size_t tty_write(struct tty *ptty,const void *ptr,size_t len)
+size_t tty_write(struct tty *ptty,const char *data,size_t len)
 {
-	const char *data=(const char*)ptr;
 	size_t i;
 	for(i=0;i<len;i++){
 		tty_writechar(ptty,data[i]);
@@ -110,6 +113,10 @@ size_t tty_writestring(struct tty *ptty,const char *string)
 
 int tty_init(void *reserved)
 {
+	if(init){
+		return -1;
+	}
+	init=1;
 	int_hook_handler(0x21,kbd_irq);
 	return 0;
 }
@@ -236,7 +243,7 @@ char tty_readchar(struct tty *ptr)
 	return _decode(inb(0x60));
 }
 
-size_t tty_read(struct tty *ptr,void *buf,size_t len)
+size_t tty_read(struct tty *ptr,char *buf,size_t len)
 {
 	// Flush before anything
 	if(ptr==NULL){
@@ -251,4 +258,38 @@ size_t tty_read(struct tty *ptr,void *buf,size_t len)
 	ptr->tmp=ptr->buf;
 	memcpy(buf,ptr->buf,size);
 	return size;
+}
+
+/* Wrapping write_dev */
+size_t ttydev_write(struct device *dev,const void *buf,size_t len)
+{
+	struct tty *ptr=(struct tty*)dev->data;
+	return tty_write(ptr,buf,len);
+}
+
+size_t ttydev_read(struct device *dev,void *buf,size_t len)
+{
+	struct tty *ptr=(struct tty*)dev->data;
+	return tty_read(ptr,buf,len);
+}
+
+int ttydev_open(struct device *dev,uint8_t flags)
+{
+	struct tty *ptr=NULL;
+	if(dev->data){
+		errno=EBUSY;
+		return -EBUSY;
+	}
+	tty_init(NULL);
+	ptr=(struct tty*)kmalloc(sizeof(struct tty));
+	tty_create(ptr);
+	dev->data=ptr;
+	return 0;
+}
+
+int ttydev_close(struct device *dev)
+{
+	kfree(dev->data);
+	dev->data=NULL;
+	return 0;
 }

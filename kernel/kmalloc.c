@@ -24,3 +24,8 @@ void *kmalloca(size_t sz,size_t align)
 	}
 	return kmalloc(sz);
 }
+
+void kfree(void *ptr)
+{
+	// For future use
+}

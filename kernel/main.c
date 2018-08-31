@@ -1,6 +1,7 @@
 /* Entry of the kernel */
 #include <foos/system.h>
 #include <foos/kmalloc.h>
+#include <foos/device.h>
 #include <dev/tty.h>
 #include <dev/pit.h>
 #include <asm/ioports.h>
@@ -38,6 +39,8 @@ int kernel_main(void *reserved)
 	tty_init(NULL);
 	pmem_init(NULL);
 	vmem_init(NULL);
+	int tty=dev_open(0,0);
+	dev_write(tty,"Hi\n",3);
 	pit_init(1000);
 	int_enable();
 	check_floppy();
@@ -47,5 +50,6 @@ int kernel_main(void *reserved)
 	}else{
 		puts("error on delaying");
 	}
+	dev_close(tty);
 	return 0;
 }
