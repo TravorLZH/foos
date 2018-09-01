@@ -2,6 +2,8 @@
 #define	DEVICE_H
 #include <inttypes.h>
 
+#define	DEV_TTY	0
+
 struct device;
 
 typedef	size_t(*devwrite_t)(struct device*,const void*,size_t);

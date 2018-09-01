@@ -8,8 +8,6 @@
 #ifndef	BUFSIZ
 #define	BUFSIZ	512
 #endif
-/* Common Variables */
-extern struct tty *kernel_tty;
 /* Functions */
 extern int kernel_main(void *reserved);
 #endif

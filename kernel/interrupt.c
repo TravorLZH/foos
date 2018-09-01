@@ -89,7 +89,6 @@ static void idt_init(void)
 
 void int_init(void)
 {
-	puts("Initializing Interrupt");
 	idt_init();
 	int_hook_handler(0x00,zero_division);
 	int_hook_handler(0x0D,general_protection);
@@ -97,20 +96,12 @@ void int_init(void)
 
 void int_handler(struct registers regs)
 {
-	uint8_t color=kernel_tty->color;
-	kernel_tty->color=0x0F;
 	if(handlers[regs.int_no]){
 		inthandler_t h=handlers[regs.int_no];
 		h(regs);
 	}else{
-		char tmp[4];
-		tmp[3]='\0';
-		itoa(regs.int_no,tmp);
-		tty_writestring(NULL,"Unhandled interrupt ");
-		tty_writestring(NULL,tmp);
-		putchar('\n');
+		printf("Unhandled interrupt 0x%x\n",regs.int_no);
 	}
-	kernel_tty->color=color;
 }
 
 void int_hook_handler(uint8_t no,inthandler_t handler)

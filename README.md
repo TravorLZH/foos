@@ -17,6 +17,8 @@ These are my little goals to make this OS
 - [x] Virtual Memory Management
 - [x] Physical Memory Management (Frames, Page Frame Allocator)
 - [x] Porting `liballoc` (malloc)
+- [x] Hardware Abstraction Layer (`dev_write()`, `dev_read()`, `dev_open()`
+and `dev_close()`)
 - [ ] RAM Drive
 - [ ] Floppy Disk Controller
 - [ ] Loadable Kernel Module

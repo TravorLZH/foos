@@ -11,8 +11,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct tty *kernel_tty=NULL;
-
 static const char* floppy_type[]={
 	"Not Applicable",
 	"360 KB 5.25\"",
@@ -33,14 +31,11 @@ static void check_floppy(void)
 
 int kernel_main(void *reserved)
 {
-	kernel_tty=(struct tty*)kmalloc(sizeof(struct tty));
-	tty_create(kernel_tty);
 	int_init();
-	tty_init(NULL);
 	pmem_init(NULL);
 	vmem_init(NULL);
-	int tty=dev_open(0,0);
-	dev_write(tty,"Hi\n",3);
+	tty_init(NULL);
+	dev_open(DEV_TTY,0);
 	pit_init(1000);
 	int_enable();
 	check_floppy();
@@ -50,6 +45,6 @@ int kernel_main(void *reserved)
 	}else{
 		puts("error on delaying");
 	}
-	dev_close(tty);
+	dev_close(DEV_TTY);
 	return 0;
 }
