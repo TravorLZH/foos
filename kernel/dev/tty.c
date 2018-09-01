@@ -131,6 +131,17 @@ int tty_create(struct tty* ptr)
 	ptr->cursor=tty_get_cursor();
 	return 0;
 }
+
+void tty_clear(struct tty *ptty)
+{
+	uint16_t *ptr=VGA_BASE;
+	ptr+=VGA_WIDTH*VGA_HEIGHT;
+	while((ptr--)>VGA_BASE){
+		*ptr=0x0720;
+	}
+	tty_update_cursor(ptty,0);
+}
+
 /***************************************************************************
  **************************** HERE COMES INPUT *****************************
  ***************************************************************************/
@@ -273,7 +284,7 @@ size_t ttydev_read(struct device *dev,void *buf,size_t len)
 	return tty_read(ptr,buf,len);
 }
 
-int ttydev_open(struct device *dev,uint8_t flags)
+int ttydev_open(struct device *dev,int flags)
 {
 	struct tty *ptr=NULL;
 	if(dev->data){
@@ -291,5 +302,35 @@ int ttydev_close(struct device *dev)
 {
 	kfree(dev->data);
 	dev->data=NULL;
+	return 0;
+}
+
+int ttydev_ioctl(struct device *dev,int request,void *args)
+{
+	struct tty *ptr=(struct tty*)dev->data;
+	uint16_t *cursor=NULL;
+	uint8_t *color=NULL;
+	switch(request){
+	case TTY_CLEAR:
+		tty_clear(ptr);
+		break;
+	case TTY_SETCSR:
+		tty_update_cursor(ptr,*(uint16_t*)args);
+		break;
+	case TTY_GETCSR:
+		cursor=(uint16_t*)args;
+		*cursor=tty_get_cursor();
+		break;
+	case TTY_SETCOL:
+		ptr->color=*(uint8_t*)args;
+		break;
+	case TTY_GETCOL:
+		color=(uint8_t*)args;
+		*color=ptr->color;
+		break;
+	default:
+		errno=EINVAL;
+		return -EINVAL;
+	}
 	return 0;
 }

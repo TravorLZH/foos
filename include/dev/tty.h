@@ -1,6 +1,14 @@
 #ifndef	TTY_H
 #define	TTY_H
 #include <inttypes.h>
+
+/* Device Commands */
+#define	TTY_CLEAR	0x00	/* Clear terminal screen */
+#define	TTY_SETCSR	0x01	/* Set cursor position */
+#define	TTY_GETCSR	0x81	/* Get cursor position */
+#define	TTY_SETCOL	0x02	/* Set color */
+#define	TTY_GETCOL	0x82	/* Get color */
+
 #define	VGA_CMD		0x3D4
 #define	VGA_DATA	(VGA_CMD+1)
 #define	VGA_BASE	(uint16_t*)0xB8000
@@ -51,6 +59,7 @@ extern size_t tty_writestring(struct tty *ptr,const char *str);
 extern size_t tty_read(struct tty *ptr,char *buf,size_t len);
 extern char tty_readchar(struct tty *ptr);
 extern int tty_create(struct tty *ptr);
+extern void tty_clear(struct tty *ptr);
 /* Initialization before creating TTY */
 extern int tty_init(void *reserved);
 #endif

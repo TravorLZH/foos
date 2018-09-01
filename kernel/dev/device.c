@@ -4,15 +4,17 @@
 
 extern size_t ttydev_write(struct device *dev,const void *buf,size_t len);
 extern size_t ttydev_read(struct device *dev,void *buf,size_t len);
-extern int ttydev_open(struct device *dev,uint8_t flags);
+extern int ttydev_open(struct device *dev,int flags);
 extern int ttydev_close(struct device *dev);
+extern int ttydev_ioctl(struct device *dev,int request,void *args);
 
 struct device devs[]={
 	{
-		"tty",(devwrite_t)ttydev_write,
-		(devread_t)ttydev_read,
-		(devopen_t)ttydev_open,
-		(devclose_t)ttydev_close
+		"tty",ttydev_write,
+		ttydev_read,
+		ttydev_open,
+		ttydev_close,
+		ttydev_ioctl
 	}
 };
 
@@ -36,7 +38,7 @@ size_t dev_read(int no,void *buf,size_t len)
 	return -ENOSYS;
 }
 
-int dev_open(int no,uint8_t flags)
+int dev_open(int no,int flags)
 {
 	struct device *ptr=devs+no;
 	if(ptr->open!=NULL){
@@ -51,6 +53,16 @@ int dev_close(int no)
 	struct device *ptr=devs+no;
 	if(ptr->close!=NULL){
 		return ptr->close(ptr);
+	}
+	errno=ENOSYS;
+	return -ENOSYS;
+}
+
+int dev_ioctl(int no,int request,void *args)
+{
+	struct device *ptr=devs+no;
+	if(ptr->ioctl!=NULL){
+		return ptr->ioctl(ptr,request,args);
 	}
 	errno=ENOSYS;
 	return -ENOSYS;

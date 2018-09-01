@@ -34,17 +34,11 @@ int kernel_main(void *reserved)
 	int_init();
 	pmem_init(NULL);
 	vmem_init(NULL);
-	tty_init(NULL);
-	dev_open(DEV_TTY,0);
 	pit_init(1000);
 	int_enable();
+	dev_open(DEV_TTY,0);
+	dev_ioctl(DEV_TTY,TTY_CLEAR,NULL);
 	check_floppy();
-	int ret=pit_delay(4000);
-	if(!ret){
-		puts("4 seconds!");
-	}else{
-		puts("error on delaying");
-	}
 	dev_close(DEV_TTY);
 	return 0;
 }
