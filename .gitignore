@@ -2,3 +2,5 @@
 *.bin
 *.img
 *.a
+*.exe
+tools/mkdisk
