@@ -1,7 +1,10 @@
 .extern	kernel_main
-DATASEG=0x10
-
 .globl	kernel_entry
+DATASEG=0x10
+RDSEG=0x3000
+RDEND=0x4000
+
+.text
 kernel_entry:
 	movl	$DATASEG,%eax
 	movw	%ax,%ds
@@ -9,6 +12,7 @@ kernel_entry:
 	movw	%ax,%fs
 	movw	%ax,%gs
 	movw	%ax,%ss
+	movl	$0x400000,%esp	# 1MB Stack (0x100000 - 0x400000)
 check_a20:
 	movl	$0x100000,%edi
 	movl	$0x200000,%esi
@@ -24,8 +28,8 @@ enable_a20_fast:
 	andb	$0xFE,%al
 	outb	%al,$0x92
 a20_ok:
-	movl	$0x400000,%esp	# 1MB Stack (0x100000 - 0x400000)
-	push	$0
+	push	$RDEND << 4
+	push	$RDSEG << 4
 	call	kernel_main
-	addl	$4,%esp
+	addl	$0x8,%esp
 	jmp	.

@@ -6,6 +6,10 @@ CODESEG=0x8
 PMBASE=0x90200
 SYSSEG=0x1000
 SYSSIZE=0x4000
+RAMDISK=0x80	# Load RAM Disk from C:
+RD_SECTORS=8
+RDSEG=0x3000
+RDEND=0x4000
 
 .globl	_start
 _start:
@@ -26,6 +30,16 @@ move_system:	# From 1000:0000 to 0000:0000
 	rep
 	movsb
 	popw	%ds
+	jmp	switch_pm
+load_ramdisk:	# Load it to 3000:0000
+	movw	$RDSEG,%ax
+	movw	%ax,%es
+	movw	$0x0,%bx
+	movb	$RAMDISK,%dl
+	movw	$0x0,%cx
+	movb	$RD_SECTORS,%al
+	movb	$0x02,%ah
+	int	$0x13
 switch_pm:
 	lgdt	gdt_descriptor
 	movl	%cr0,%eax

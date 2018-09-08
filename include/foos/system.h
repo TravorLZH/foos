@@ -8,6 +8,7 @@
 #ifndef	BUFSIZ
 #define	BUFSIZ	512
 #endif
+
 /* Functions */
-extern int kernel_main(void *reserved);
+extern int kernel_main(void *ramdisk,void *ramdisk_end);
 #endif

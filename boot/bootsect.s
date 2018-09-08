@@ -47,7 +47,7 @@ greeting:
 reset_floppy:
 	movb	$0x0,%ah
 	movb	bootdev,%dl
-	int	$0x80
+	int	$0x13
 load_setup:
 	movw	$loading_setup,%si
 	call	print_string
@@ -66,7 +66,7 @@ load_system:
 	stc
 	movw	$SYSSEG,%ax
 	movw	%ax,%es
-	movw	$0x0,%bx
+	#movw	$0x0,%bx	# BX is already zeroed in loading setup
 	movb	$0x02,%ah
 	movb	$SYS_SECTORS,%al
 	movw	$0x0003,%cx

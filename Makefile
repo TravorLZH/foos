@@ -30,7 +30,7 @@ floppy.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
 	cat $^ | dd status=noxfer conv=notrunc of=$@
 
 run:
-	$(QEMU) -d guest_errors -fda floppy.img -fdb ramdisk.img
+	$(QEMU) -d guest_errors -fda floppy.img -hda ramdisk.img
 
 clean:
 	$(RM) -rf *.img *.iso
