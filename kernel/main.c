@@ -2,14 +2,15 @@
 #include <foos/system.h>
 #include <foos/kmalloc.h>
 #include <foos/device.h>
-#include <dev/tty.h>
 #include <dev/pit.h>
+#include <dev/ramdisk.h>
 #include <asm/ioports.h>
 #include <asm/cmos.h>
 #include <cpu/interrupt.h>
 #include <cpu/memory.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static const char* floppy_type[]={
 	"Not Applicable",
@@ -29,7 +30,7 @@ static void check_floppy(void)
 	puts(floppy_type[val & 0xF]);
 }
 
-int kernel_main(void *ramdisk,void *ramdisk_end)
+int kernel_main(struct kernel_conf *conf)
 {
 	int_init();
 	pmem_init(NULL);
@@ -37,9 +38,11 @@ int kernel_main(void *ramdisk,void *ramdisk_end)
 	pit_init(1000);
 	int_enable();
 	dev_open(DEV_TTY,0);
-	dev_ioctl(DEV_TTY,TTY_CLEAR,NULL);
 	check_floppy();
-	printf("RAM Disk starts at 0x%x\n",ramdisk);
+	if(conf->flags & KF_RAMDISK){
+		puts("Loading RAM Disk");
+		ramdisk_init(conf->rd_start,conf->rd_end - conf->rd_start);
+	}
 	dev_close(DEV_TTY);
 	return 0;
 }

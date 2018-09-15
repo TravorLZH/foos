@@ -1,6 +1,7 @@
 #ifndef	TTY_H
 #define	TTY_H
 #include <inttypes.h>
+#include <foos/device.h>
 
 /* Device Commands */
 #define	TTY_CLEAR	0x00	/* Clear terminal screen */
@@ -62,4 +63,11 @@ extern int tty_create(struct tty *ptr);
 extern void tty_clear(struct tty *ptr);
 /* Initialization before creating TTY */
 extern int tty_init(void *reserved);
+
+/* TTY device functions */
+extern size_t ttydev_write(struct device *dev,const void *buf,size_t len);
+extern size_t ttydev_read(struct device *dev,void *buf,size_t off,size_t len);
+extern int ttydev_open(struct device *dev,int flags);
+extern int ttydev_close(struct device *dev);
+extern int ttydev_ioctl(struct device *dev,int request,void *args);
 #endif

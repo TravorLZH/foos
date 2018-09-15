@@ -7,18 +7,56 @@ PMBASE=0x90200
 SYSSEG=0x1000
 SYSSIZE=0x4000
 RAMDISK=0x80	# Load RAM Disk from C:
-RD_SECTORS=8
+RD_SECTORS=1
 RDSEG=0x3000
 RDEND=0x4000
+# Kernel configuration is placed in 0x80000
+KCONFSEG=0x8000
+# The following variable are the offset from KCONFSEG:0000
+KCONF_FLAGS=0		# Flags: bit[1:0] means RAM Disk enabled
+KCONF_RAMDISKSTART=4	# RAM Disk start address
+KCONF_RAMDISKEND=8	# RAM Disk end address
 
 .globl	_start
 _start:
 setup:
 	movw	$SETUPSEG,%ax
 	movw	%ax,%ds
-	movw	$welcome_setup,%si
+	movw	$KCONFSEG,%ax
+	movw	%ax,%fs
+	movw	$load_rd,%si
 	call	print_string
+load_ramdisk:	# Load it to 3000:0000
+	stc
+	movb	$0x0,%ah
+	movb	$RAMDISK,%dl
+	int	$0x13
+	movw	$RDSEG,%ax
+	movw	%ax,%es
+	movw	$0x0,%bx
+	movb	$0x02,%ah
+	movb	$RD_SECTORS,%al
+	movw	$0x0001,%cx
+	int	$0x13
+	jc	no_ramdisk
+ramdisk_ok:
+	movw	$newline,%si
+	call	print_string
+	movl	%fs:KCONF_FLAGS,%eax
+	orl	$0x1,%eax	# Set RD flag
+	movl	%eax,%fs:KCONF_FLAGS
+	movl	$RDSEG << 4,%eax
+	movl	%eax,%fs:KCONF_RAMDISKSTART
+	movl	$RDEND << 4,%eax
+	movl	%eax,%fs:KCONF_RAMDISKEND
+	jmp	move_system
+no_ramdisk:
+	movw	$no_rd,%si
+	call	print_string
+# Remember: No interrupts shall be called after this! We destroyed the IVT
 move_system:	# From 1000:0000 to 0000:0000
+	movw	$move_sys,%si
+	call	print_string
 	pushw	%ds
 	movw	$SYSSEG,%ax
 	movw	%ax,%ds
@@ -31,15 +69,6 @@ move_system:	# From 1000:0000 to 0000:0000
 	movsb
 	popw	%ds
 	jmp	switch_pm
-load_ramdisk:	# Load it to 3000:0000
-	movw	$RDSEG,%ax
-	movw	%ax,%es
-	movw	$0x0,%bx
-	movb	$RAMDISK,%dl
-	movw	$0x0,%cx
-	movb	$RD_SECTORS,%al
-	movb	$0x02,%ah
-	int	$0x13
 switch_pm:
 	lgdt	gdt_descriptor
 	movl	%cr0,%eax
@@ -80,8 +109,16 @@ gdt_descriptor:
 	.word	gdt_end - gdt_start - 1	# 3 entries
 	.long	gdt_start+PMBASE
 # Strings
-welcome_setup:
-	.ascii	"Moving kernel"
+load_rd:
+	.ascii	"Loading RAM Disk..."
+	.byte	0x0
+no_rd:
+	.ascii	"[Not Available]"
+	.byte	0x0D,0x0A,0x0
+move_sys:
+	.ascii	"Moving kernel..."
+	.byte	0x0D,0x0A,0x0
+newline:
 	.byte	0x0D,0x0A,0x0
 
 .space	512-(.-setup)

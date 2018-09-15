@@ -9,6 +9,14 @@
 #define	BUFSIZ	512
 #endif
 
+#define	KF_RAMDISK	0x01
+
+struct kernel_conf {
+	uint32_t flags;
+	void* rd_start;
+	void* rd_end;
+} __attribute__((packed));
+
 /* Functions */
-extern int kernel_main(void *ramdisk,void *ramdisk_end);
+extern int kernel_main(struct kernel_conf *conf);
 #endif

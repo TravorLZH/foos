@@ -3,6 +3,8 @@
 #include <inttypes.h>
 
 extern char *strrev(char *str);
+extern char *strcpy(char *to,const char *from);
+extern int strcmp(const char *s1,const char *s2);
 
 static inline int strlen(const char *s)
 {

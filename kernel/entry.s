@@ -12,7 +12,6 @@ kernel_entry:
 	movw	%ax,%fs
 	movw	%ax,%gs
 	movw	%ax,%ss
-	movl	$0x400000,%esp	# 1MB Stack (0x100000 - 0x400000)
 check_a20:
 	movl	$0x100000,%edi
 	movl	$0x200000,%esi
@@ -28,8 +27,8 @@ enable_a20_fast:
 	andb	$0xFE,%al
 	outb	%al,$0x92
 a20_ok:
-	push	$RDEND << 4
-	push	$RDSEG << 4
+	movl	$0x400000,%esp	# 3MB Stack (0x100000 - 0x400000)
+	pushl	$0x80000
 	call	kernel_main
-	addl	$0x8,%esp
+	addl	$0x4,%esp
 	jmp	.

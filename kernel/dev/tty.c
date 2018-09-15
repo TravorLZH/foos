@@ -278,7 +278,7 @@ size_t ttydev_write(struct device *dev,const void *buf,size_t len)
 	return tty_write(ptr,buf,len);
 }
 
-size_t ttydev_read(struct device *dev,void *buf,size_t len)
+size_t ttydev_read(struct device *dev,void *buf,size_t off,size_t len)
 {
 	struct tty *ptr=(struct tty*)dev->data;
 	return tty_read(ptr,buf,len);

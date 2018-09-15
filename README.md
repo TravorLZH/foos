@@ -19,7 +19,7 @@ These are my little goals to make this OS
 - [x] Porting `liballoc` (malloc)
 - [x] Hardware Abstraction Layer (`dev_write()`, `dev_read()`, `dev_open()`,
 `dev_close()`, and `dev_ioctl()`)
-- [ ] RAM Drive
+- [x] RAM Drive
 - [ ] Floppy Disk Controller
 - [ ] Loadable Kernel Module
 - [ ] Virtual File System

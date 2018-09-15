@@ -1,21 +1,26 @@
 #include <foos/device.h>
+#include <dev/tty.h>
+#include <dev/ramdisk.h>
 #include <foos/system.h>
 #include <errno.h>
 
-extern size_t ttydev_write(struct device *dev,const void *buf,size_t len);
-extern size_t ttydev_read(struct device *dev,void *buf,size_t len);
-extern int ttydev_open(struct device *dev,int flags);
-extern int ttydev_close(struct device *dev);
-extern int ttydev_ioctl(struct device *dev,int request,void *args);
-
 struct device devs[]={
 	{
-		"tty",ttydev_write,
+		"tty",
+		ttydev_write,
 		ttydev_read,
 		ttydev_open,
 		ttydev_close,
 		ttydev_ioctl
-	}
+	}//,
+//	{
+//		"ramdisk",
+//		NULL,
+//		ramdisk_read,
+//		ramdisk_open,
+//		ramdisk_close,
+//		ramdisk_ioctl
+//	}
 };
 
 size_t dev_write(int no,const void *buf,size_t len)
@@ -32,7 +37,11 @@ size_t dev_read(int no,void *buf,size_t len)
 {
 	struct device *ptr=devs+no;
 	if(ptr->read!=NULL){
-		return ptr->read(ptr,buf,len);
+		int ret=ptr->read(ptr,buf,ptr->offset,len);
+		if(!ret){
+			ptr->offset+=len;
+		}
+		return ret;
 	}
 	errno=ENOSYS;
 	return -ENOSYS;
@@ -41,6 +50,7 @@ size_t dev_read(int no,void *buf,size_t len)
 int dev_open(int no,int flags)
 {
 	struct device *ptr=devs+no;
+	ptr->offset=0;
 	if(ptr->open!=NULL){
 		return ptr->open(ptr,flags);
 	}
@@ -51,6 +61,7 @@ int dev_open(int no,int flags)
 int dev_close(int no)
 {
 	struct device *ptr=devs+no;
+	ptr->offset=0;
 	if(ptr->close!=NULL){
 		return ptr->close(ptr);
 	}

@@ -14,3 +14,21 @@ char *strrev(char *str)
 	}
 	return str;
 }
+
+char *strcpy(char *to,const char *from)
+{
+	char *s=to;
+	while(*s++=*from++);
+	return to;
+}
+
+int strcmp(const char *s1,const char *s2)
+{
+	int ret;
+	while(!(ret=*s1 - *s2) && *s1)
+	{
+		s1++;
+		s2++;
+	}
+	return ret;
+}
