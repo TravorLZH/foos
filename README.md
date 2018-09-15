@@ -36,6 +36,9 @@ Change `Makefile`'s `CC`, `AS`, and `LD` to your toolchain and run:
 $ make dep
 $ make
 ```
+
+> This OS can successfully be built on Termux without libgcc
+
 You can also type `make run` to play the OS if you have `qemu-system-i386`
 installed.
 ## Images
