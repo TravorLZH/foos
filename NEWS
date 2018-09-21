@@ -1,0 +1,14 @@
+FOOS v0.02
+
+FEATURES:
+	* Virtual memory
+	* Placement malloc()
+	* Read-only file system (RAM Drive)
+	* Ported liballoc
+	* Advanced building system
+
+NOTE:
+	As the project grows, the size of the kernel image exaggerates. The
+	need of a better reading procedure is required for the bootloader
+	to load larger images, so I really need help on reading LBA sectors
+	by calling BIOS directly!!!
