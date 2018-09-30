@@ -4,12 +4,16 @@ BOOTSEG=0x7C0
 INITSEG=0x9000
 SETUPSEG=0x9020
 SYSSEG=0x1000	# Load system at 1000:0000
-SYSSIZE=0x4000	# System size
+SYSSIZE=0x5000	# System size
 SYS_SECTORS=SYSSIZE>>9
 SETUP_SECTORS=1
 
+
+# Declaration of `_start' is only used to avoid warning during the linkage
 .globl	_start
 _start:
+
+# Once the system is booted at 0x7C00 (07C0:0000), we migrate to 9000:0000
 boot:
 	cli
 	cld
@@ -24,30 +28,21 @@ boot:
 	rep
 	movsw
 	ljmp	$INITSEG,$boot_main
+# This is where we really start initializing our system
 boot_main:
 	movw	%ax,%ds
 	movb	%dl,bootdev
 	xorw	%dx,%dx
-check_drive:
-	movw	$boot_from,%si
-	call	print_string
-	cmpb	$0x80,%dl
-	jg	print_drive
-	andb	$0x7F,%dl
-	add	$0x2,%dl
-print_drive:
-	movw	$0x0E41,%ax
-	addb	%dl,%al
-	int	$0x10
-	movw	$newline,%si
-	call	print_string
 greeting:
 	mov	$welcome,%si
 	call	print_string
+# Reset the boot drive to avoid errors
 reset_floppy:
 	movb	$0x0,%ah
 	movb	bootdev,%dl
 	int	$0x13
+# Read the setup program that does Protected Mode setup for the kernel
+# We can just simply use the BIOS-provided CHS read function
 load_setup:
 	movw	$loading_setup,%si
 	call	print_string
@@ -60,18 +55,21 @@ load_setup:
 	movw	$0x0002,%cx	# From cylinder 0, 2nd sector
 	int	$0x13
 	jc	disk_error
+# FIXME: The system is larger, the method of reading it oughts to be improved
 load_system:
 	movw	$loading_system,%si
 	call	print_string
 	stc
 	movw	$SYSSEG,%ax
 	movw	%ax,%es
-	#movw	$0x0,%bx	# BX is already zeroed in loading setup
-	movb	$0x02,%ah
-	movb	$SYS_SECTORS,%al
+	movw	$0x0,%bx
+	movb	$0x2,%ah
 	movw	$0x0003,%cx
+	movb	$SYS_SECTORS,%al
 	int	$0x13
 	jc	disk_error
+	cmpb	$SYS_SECTORS,%al	# Make sure BIOS read enough for us
+	jne	disk_error
 run_setup:
 	ljmp	$SETUPSEG,$0x0	# Let's go
 
@@ -89,6 +87,10 @@ print_string:
 disk_error:
 	movw	$disk_read_failed,%si
 	call	print_string
+	movb	%ah,%al
+	addb	$'0',%al
+	movb	$0xE,%ah
+	int	$0x10
 	jmp	.
 # Data
 bootdev:		# This stores the boot drive no.
