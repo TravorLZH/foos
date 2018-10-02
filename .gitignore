@@ -3,4 +3,5 @@
 *.img
 *.a
 *.exe
+*.elf
 tools/mkdisk
