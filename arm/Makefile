@@ -19,7 +19,7 @@ start.o:	start.S
 	$(AS) -o$@ $^
 
 run:
-	$(QEMU) -M versatilepb -kernel kernel.img -serial stdio
+	$(QEMU) -M raspi2 -kernel kernel.img
 
 clean:
 	$(RM) -rf *.img *.o

@@ -1,18 +1,21 @@
-void serial_sendbyte(char c)
+void uart_sendbyte(char c)
 {
-	__asm__("ldr r0,=#0x101f1000\n"
+	__asm__("ldr r0,=#0x3F201000\n"
 		"str %[val],[r0]"::[val]"r"((long)c));
+	if(c=='\n'){
+		uart_sendbyte('\r');
+	}
 }
 
-int serial_sendstring(const char *s)
+int uart_sendstring(const char *s)
 {
 	do{
-		serial_sendbyte(*s);
+		uart_sendbyte(*s);
 	}while(*++s);
 }
 
 int entry(void)
 {
-	serial_sendstring("Hello world!\n");
+	uart_sendstring("Hello world!\n");
 	return 0;
 }
