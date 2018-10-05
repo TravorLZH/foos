@@ -1,7 +1,10 @@
+#define	MWR(addr,v) \
+	__asm__("str %[val],[%[at]]"::[val]"r"((v)), \
+			[at]"r"((addr)));
+
 void uart_sendbyte(char c)
 {
-	__asm__("ldr r0,=#0x3F201000\n"
-		"str %[val],[r0]"::[val]"r"((long)c));
+	MWR(0x3F201000,c);
 	if(c=='\n'){
 		uart_sendbyte('\r');
 	}

@@ -6,6 +6,7 @@ CC=$(TARGET)-gcc
 CFLAGS=-ffreestanding
 RM=rm
 QEMU=qemu-system-arm
+QEMUFLAGS=-M raspi2 -nographic
 
 all:	kernel.img
 
@@ -19,7 +20,7 @@ start.o:	start.S
 	$(AS) -o$@ $^
 
 run:
-	$(QEMU) -M raspi2 -kernel kernel.img
+	$(QEMU) $(QEMUFLAGS) -kernel kernel.img
 
 clean:
 	$(RM) -rf *.img *.o
