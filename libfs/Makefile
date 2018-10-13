@@ -1,3 +1,4 @@
+# Makefile for libfs of FOOS
 C_SOURCES=$(wildcard *.c)
 OBJ=$(C_SOURCES:.c=.o)
 CFLAGS=-ffreestanding
@@ -6,22 +7,19 @@ CFLAGS+=$(CPPFLAGS)
 
 .PHONY:	all clean dep clean-dep
 
-all:	libc.a
-
-%.o:	%.s
-	$(AS) -o $@ $<
+all:	libfs.a
 
 %.o:	%.c
-	$(CC) -m32 -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
-libc.a:	$(OBJ)
+libfs.a:	$(OBJ)
 	$(AR) rc $@ $^
 
 clean:
 	$(RM) -rf *.o *.a
 
 install:
-	install -c libc.a $(DEST)/lib
+	install -c libfs.a $(DEST)/lib
 
 dep:
 	sed '/\#\#\# Dependencies/q' < Makefile > Makefile_temp

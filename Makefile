@@ -7,16 +7,25 @@ AR=i386-elf-ar
 RM=rm
 QEMU=qemu-system-i386
 LDFLAGS=-melf_i386 --oformat=binary -Ttext=0
+DEST=$(CURDIR)
 
-.PHONY:	all all-subdirs run clean dep clean-dep ramdisk.img
+.PHONY:	all all-subdirs install-libs run clean dep clean-dep ramdisk.img
 
 all:	all-subdirs ramdisk.img floppy.img
 
-all-subdirs:
-	$(MAKE) -C libc CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
-	$(MAKE) -C liballoc compile CC=$(CC) CFLAGS=-I../include AR=$(AR)
+all-subdirs:	all-libs install-libs
 	$(MAKE) -C kernel CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
 	$(MAKE) -C tools
+
+all-libs:
+	$(MAKE) -C libc CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
+	$(MAKE) -C libfs CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
+	$(MAKE) -C liballoc compile CC=$(CC) CFLAGS=-I../include AR=$(AR)
+
+install-libs:
+	$(MAKE) -C libc install DEST=$(DEST)
+	$(MAKE) -C libfs install DEST=$(DEST)
+	$(MAKE) -C liballoc install DEST=$(DEST)
 
 %.bin:	%.s
 	$(AS) --32 -o $(<:.s=.o) $<
@@ -37,13 +46,17 @@ clean:
 	$(RM) -rf boot/*.bin boot/*.o
 	$(MAKE) -C kernel $@ RM=$(RM)
 	$(MAKE) -C libc $@ RM=$(RM)
+	$(MAKE) -C libfs $@ RM=$(RM)
 	$(MAKE) -C liballoc $@
 	$(MAKE) -C tools $@
+
 
 dep:
 	$(MAKE) -C kernel $@ RM=$(RM)
 	$(MAKE) -C libc $@ RM=$(RM)
+	$(MAKE) -C libfs $@ RM=$(RM)
 
 clean-dep:
 	$(MAKE) -C kernel $@ RM=$(RM)
 	$(MAKE) -C libc $@ RM=$(RM)
+	$(MAKE) -C libfs $@ RM=$(RM)

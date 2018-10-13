@@ -15,6 +15,8 @@ typedef	unsigned long long	uint64_t;
 typedef	unsigned long	size_t;
 #endif
 
+typedef	size_t	off_t;
+
 /* Boolean type */
 #define	true	1
 #define	false	0

@@ -5,7 +5,8 @@ CPPFLAGS=-I../include
 CFLAGS=-ffreestanding
 CFLAGS+=-Wno-packed-bitfield-compat
 CFLAGS+=$(CPPFLAGS)
-LDFLAGS+=-melf_i386
+LDFLAGS+=-melf_i386 --oformat=binary -L../lib
+LIBS=-lc -lfs
 .PHONY:	all clean dep clean-dep
 
 all:	kernel.bin
@@ -16,8 +17,8 @@ all:	kernel.bin
 %.o:	%.c
 	$(CC) -m32 -c -o $@ $< $(CFLAGS)
 
-kernel.bin:	entry.o $(OBJ) ../libc/libc.a ../liballoc/liballoc.a
-	$(LD) $(LDFLAGS) -Tlink.ld -o $@ $^ --oformat=binary
+kernel.bin:	entry.o $(OBJ)
+	$(LD) $(LDFLAGS) -Tlink.ld -o $@ $^ $(LIBS)
 
 clean:
 	$(RM) -rf *.o *.bin
