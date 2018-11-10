@@ -180,7 +180,7 @@ static char _decode(uint8_t code)
 		// SHIFT without CAPS
 		return shift_set[code];
 	}
-	return scancode_set[code];
+	return tolower(shift_set[code]);
 }
 
 static void kbd_irq(struct registers regs)
