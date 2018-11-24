@@ -7,8 +7,11 @@
 #define	RD_HEADSIG	0xD158
 #define	RD_FILESIG	0xDEADF11E
 
-#define	RD_USEFILE	0x00
-#define	RD_GETFILE	0x10
+#define	RD_SETADDR	0x01
+#define	RD_SETSIZE	0x02
+#define	RD_GETADDR	0x11
+#define	RD_GETSIZE	0x12
+#define	RD_FLUSH	0x00
 
 struct rd_header {
 	uint16_t signature;	// Signature: 0xD158 (like DISK)
@@ -29,6 +32,12 @@ struct rd_data {
 } __attribute__((packed));
 
 #ifndef	FOOS_TOOLS
+
+struct ramdisk {
+	void *addr;
+	size_t size;
+};
+
 extern int ramdisk_init(void *addr,uint32_t size);
 
 /** RAM Disk device functions */

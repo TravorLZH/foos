@@ -12,15 +12,15 @@ struct device devs[]={
 		ttydev_open,
 		ttydev_close,
 		ttydev_ioctl
-	}//,
-//	{
-//		"ramdisk",
-//		NULL,
-//		ramdisk_read,
-//		ramdisk_open,
-//		ramdisk_close,
-//		ramdisk_ioctl
-//	}
+	},
+	{
+		"ramdisk",
+		NULL,
+		ramdisk_read,
+		ramdisk_open,
+		ramdisk_close,
+		ramdisk_ioctl
+	}
 };
 
 size_t dev_write(int no,const void *buf,size_t len)
@@ -38,8 +38,8 @@ size_t dev_read(int no,void *buf,size_t len)
 	struct device *ptr=devs+no;
 	if(ptr->read!=NULL){
 		int ret=ptr->read(ptr,buf,ptr->offset,len);
-		if(!ret){
-			ptr->offset+=len;
+		if(ret>0){
+			ptr->offset+=ret;
 		}
 		return ret;
 	}

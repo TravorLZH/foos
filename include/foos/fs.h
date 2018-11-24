@@ -11,22 +11,26 @@
 #define	FS_MNT	0x08
 
 struct inode;
+struct dirent;
 
-typedef int (*openfunc)(struct inode*,uint32_t);
-typedef int (*closefunc)(struct inode*);
-typedef int (*writefunc)(struct inode*,const void*,size_t,off_t);
-typedef int (*readfunc)(struct inode*,void*,size_t,off_t);
+typedef int (*open_t)(struct inode*,uint32_t);
+typedef int (*close_t)(struct inode*);
+typedef int (*write_t)(struct inode*,const void*,size_t,off_t);
+typedef int (*read_t)(struct inode*,void*,size_t,off_t);
+typedef struct dirent *(*readdir_t)(struct inode*,size_t);
+typedef struct inode *(*finddir_t)(struct inode*,char*);
 
 struct inode {
 	char name[128];
 	size_t size;
 	uint32_t ino;
-	uint8_t type;
 	uint8_t flags;
-	openfunc open;
-	closefunc close;
-	writefunc write;
-	readfunc read;
+	open_t open;
+	close_t close;
+	write_t write;
+	read_t read;
+	readdir_t readdir;
+	finddir_t finddir;
 };
 
 struct dirent {
@@ -38,4 +42,6 @@ extern int fs_open(struct inode*,int flags);
 extern int fs_close(struct inode*);
 extern int fs_write(struct inode*,const void*,size_t,off_t);
 extern int fs_read(struct inode*,void*,size_t,off_t);
+extern struct dirent *fs_readdir(struct inode*,size_t);
+extern struct inode *fs_finddir(struct inode*,char*);
 #endif

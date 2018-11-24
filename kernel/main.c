@@ -40,8 +40,14 @@ int kernel_main(struct kernel_conf *conf)
 	dev_open(DEV_TTY,0);
 	check_floppy();
 	if(conf->flags & KF_RAMDISK){
-		puts("Loading RAM Disk");
-		ramdisk_init(conf->rd_start,conf->rd_end - conf->rd_start);
+		size_t rd_size=conf->rd_end - conf->rd_start;
+		printf("Setting up %uKB RAM Disk at 0x%x\n",rd_size/1024,
+				conf->rd_start);
+		dev_open(DEV_RAMDISK,0);
+		dev_ioctl(DEV_RAMDISK,RD_SETADDR,&conf->rd_start);
+		dev_ioctl(DEV_RAMDISK,RD_SETSIZE,&rd_size);
+		dev_ioctl(DEV_RAMDISK,RD_FLUSH,NULL);
+		dev_close(DEV_RAMDISK);
 	}
 	dev_close(DEV_TTY);
 	return 0;

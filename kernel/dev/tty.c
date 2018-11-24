@@ -179,6 +179,8 @@ static char _decode(uint8_t code)
 	}else if(ptr->kbd.shift&&!ptr->kbd.caps){
 		// SHIFT without CAPS
 		return shift_set[code];
+	}else if(ptr->kbd.shift==0){
+		return scancode_set[code];
 	}
 	return tolower(shift_set[code]);
 }
