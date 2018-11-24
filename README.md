@@ -1,5 +1,5 @@
 # Foos
-![https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)
+[![AppVeyor Branch](https://ci.appveyor.com/api/projects/status/github/TravorLZH/foos?svg=true)](https://ci.appveyor.com/project/TravorLZH/foos)
 
 Another OS project because my TravorOS's code is too messy
 

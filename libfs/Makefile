@@ -10,7 +10,7 @@ CFLAGS+=$(CPPFLAGS)
 all:	libfs.a
 
 %.o:	%.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -m32 -c -o $@ $< $(CFLAGS)
 
 libfs.a:	$(OBJ)
 	$(AR) rc $@ $^
