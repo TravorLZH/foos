@@ -5,31 +5,6 @@
 #include <stdio.h>
 #include <errno.h>
 
-struct rd_header *header=NULL;
-struct rd_fileheader *files=NULL;
-
-int ramdisk_init(void *addr,uint32_t size)
-{
-	char *base=NULL;
-	header=(struct rd_header*)addr;
-	files=(struct rd_fileheader*)(header+1);
-	int i;
-	char buf[128];
-	if(header->signature!=RD_HEADSIG){
-		puts("Invalid Signature");
-		return -1;
-	}
-	base=(char*)(files+header->nfiles);
-	for(i=0;i<header->nfiles;i++){
-		assert(files[i].magic==RD_FILESIG);
-		printf("Found file `%s'\n",files[i].name);
-		memset(buf,0,sizeof(buf));
-		memcpy(buf,base+files[i].offset,files[i].size);
-		printf("Content: `%s'\n",buf);
-	}
-	return 0;
-}
-
 int ramdisk_open(struct device *dev,int flags)
 {
 	if(dev->data==NULL){
@@ -67,8 +42,6 @@ int ramdisk_ioctl(struct device *dev,int request,void *arg)
 	case RD_GETSIZE:
 		*(size_t*)arg=rd->size;
 		break;
-	case RD_FLUSH:
-		return ramdisk_init(rd->addr,rd->size);
 	default:
 		return EINVAL;
 	}
@@ -78,9 +51,11 @@ int ramdisk_ioctl(struct device *dev,int request,void *arg)
 size_t ramdisk_read(struct device *dev,void *buf,size_t off,size_t len)
 {
 	struct ramdisk *rd=dev->data;
+	char *src=(char*)rd->addr+off;
 	if(rd==NULL){
-		return EINVAL;
+		errno=EINVAL;
+		return -EINVAL;
 	}
-	memcpy((char*)buf+off,(char*)rd->addr+off,len);
+	memcpy(buf,src,len);
 	return len;
 }

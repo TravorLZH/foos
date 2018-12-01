@@ -7,7 +7,7 @@ CFLAGS+=-Wno-packed-bitfield-compat
 CFLAGS+=$(CPPFLAGS)
 LDFLAGS+=-melf_i386 --oformat=binary -L../lib
 LIBS=-lc -lfs
-.PHONY:	all clean dep clean-dep
+.PHONY:	all clean dep clean-dep kernel.bin
 
 all:	kernel.bin
 

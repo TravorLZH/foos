@@ -1,6 +1,6 @@
 #ifndef	SYSTEM_H
 #define	SYSTEM_H
-#include <dev/tty.h>
+#include <inttypes.h>
 #define	CODESEG	0x08
 #define	DATASEG	0x08
 #define	NULL	(void*)0
@@ -8,6 +8,10 @@
 #ifndef	BUFSIZ
 #define	BUFSIZ	512
 #endif
+
+#define	SEEK_SET	0
+#define	SEEK_CUR	1
+#define	SEEK_END	2
 
 #define	KF_RAMDISK	0x01
 

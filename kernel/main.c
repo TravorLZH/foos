@@ -2,6 +2,7 @@
 #include <foos/system.h>
 #include <foos/kmalloc.h>
 #include <foos/device.h>
+#include <foos/ramfs.h>
 #include <dev/pit.h>
 #include <dev/ramdisk.h>
 #include <asm/ioports.h>
@@ -46,7 +47,7 @@ int kernel_main(struct kernel_conf *conf)
 		dev_open(DEV_RAMDISK,0);
 		dev_ioctl(DEV_RAMDISK,RD_SETADDR,&conf->rd_start);
 		dev_ioctl(DEV_RAMDISK,RD_SETSIZE,&rd_size);
-		dev_ioctl(DEV_RAMDISK,RD_FLUSH,NULL);
+		ramfs_init();
 		dev_close(DEV_RAMDISK);
 	}
 	dev_close(DEV_TTY);

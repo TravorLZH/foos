@@ -6,7 +6,7 @@
 
 struct device devs[]={
 	{
-		"tty",
+		"tty",0,NULL,
 		ttydev_write,
 		ttydev_read,
 		ttydev_open,
@@ -14,7 +14,7 @@ struct device devs[]={
 		ttydev_ioctl
 	},
 	{
-		"ramdisk",
+		"ramdisk",0,NULL,
 		NULL,
 		ramdisk_read,
 		ramdisk_open,
@@ -77,4 +77,21 @@ int dev_ioctl(int no,int request,void *args)
 	}
 	errno=ENOSYS;
 	return -ENOSYS;
+}
+
+size_t dev_seek(int no,size_t off,int whence)
+{
+	struct device *ptr=devs+no;
+	switch(whence){
+	case SEEK_SET:
+		ptr->offset=off;
+		break;
+	case SEEK_CUR:
+		ptr->offset+=off;
+		break;
+	default:
+		errno=EINVAL;
+		return -EINVAL;
+	}
+	return ptr->offset;
 }
