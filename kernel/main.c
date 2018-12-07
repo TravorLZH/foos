@@ -22,6 +22,8 @@ static const char* floppy_type[]={
 	"2.88 MB 3.5\""
 };
 
+struct inode *fs_root=NULL;
+
 static void check_floppy(void)
 {
 	uint8_t val=cmos_read(0x10);
@@ -33,6 +35,8 @@ static void check_floppy(void)
 
 int kernel_main(struct kernel_conf *conf)
 {
+	int i=0;
+	struct dirent *ent=NULL;
 	int_init();
 	pmem_init(NULL);
 	vmem_init(NULL);
@@ -47,7 +51,12 @@ int kernel_main(struct kernel_conf *conf)
 		dev_open(DEV_RAMDISK,0);
 		dev_ioctl(DEV_RAMDISK,RD_SETADDR,&conf->rd_start);
 		dev_ioctl(DEV_RAMDISK,RD_SETSIZE,&rd_size);
-		ramfs_init();
+		fs_root=ramfs_init();
+		ent=fs_readdir(fs_root,0);
+		printf("%s/\n",fs_root->name);
+		do{
+			printf("|   %s\n",ent->name);
+		}while(ent=fs_readdir(fs_root,++i));
 		dev_close(DEV_RAMDISK);
 	}
 	dev_close(DEV_TTY);

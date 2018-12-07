@@ -22,15 +22,19 @@ typedef struct inode *(*finddir_t)(struct inode*,char*);
 
 struct inode {
 	char name[128];
-	size_t size;
-	uint32_t ino;
 	uint8_t flags;
+	uint8_t mask;
+	uint8_t uid;
+	uint8_t gid;
+	uint32_t size;
+	uint32_t ino;
 	open_t open;
 	close_t close;
 	write_t write;
 	read_t read;
 	readdir_t readdir;
 	finddir_t finddir;
+	struct inode *ptr;	// Mountpoints and Symbolic links
 };
 
 struct dirent {

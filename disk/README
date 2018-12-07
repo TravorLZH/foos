@@ -1,0 +1,5 @@
+RAM Drive of FOOS
+
+This directory will be converted into FOOS' ramdisk format, and the files
+will be accessible by FOOS itself. Currently the ramdisk image generator
+is not capable of parsing subdirectories, so don't put directories here.

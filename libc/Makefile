@@ -34,3 +34,15 @@ clean-dep:
 	cp Makefile_temp Makefile
 	$(RM) -f Makefile_temp
 ### Dependencies
+conv.o: conv.c ../include/string.h ../include/inttypes.h \
+ ../include/stdlib.h
+errno.o: errno.c ../include/errno.h
+input.o: input.c ../include/dev/tty.h ../include/inttypes.h \
+ ../include/foos/device.h ../include/foos/system.h ../include/stdio.h \
+ ../include/stdarg.h
+output.o: output.c ../include/stdio.h ../include/stdarg.h \
+ ../include/inttypes.h ../include/string.h ../include/foos/device.h \
+ ../include/foos/system.h
+printf.o: printf.c ../include/stdarg.h ../include/string.h \
+ ../include/inttypes.h ../include/stdlib.h ../include/stdio.h
+string.o: string.c ../include/string.h ../include/inttypes.h

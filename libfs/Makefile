@@ -32,3 +32,9 @@ clean-dep:
 	cp Makefile_temp Makefile
 	$(RM) -f Makefile_temp
 ### Dependencies
+ramfs.o: ramfs.c ../include/foos/fs.h ../include/inttypes.h \
+ ../include/foos/device.h ../include/foos/system.h \
+ ../include/foos/ramfs.h ../include/dev/ramdisk.h ../include/assert.h \
+ ../include/stdio.h ../include/stdarg.h
+wrap.o: wrap.c ../include/foos/system.h ../include/inttypes.h \
+ ../include/foos/fs.h ../include/foos/device.h ../include/errno.h
