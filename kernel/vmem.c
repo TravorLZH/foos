@@ -36,7 +36,7 @@ int vmem_init(void *reserved)
 		__asm__("movl %%eax,%%cr3"::"a"(tables));
 	}
 	size_t i;
-	for(i=0;i<2048;i++){
+	for(i=0;i<4096;i++){
 		void *addr=(void*)(i*PAGE_SIZE);
 		pmem_mapaddr(addr,NULL,P_WRITABLE,tables);
 	}

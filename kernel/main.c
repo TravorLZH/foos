@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern int _puts(const char*);
+
 char buf[BUFSIZ];	// Buffer for everything
 uint8_t default_color;
 uint8_t white_on_black=0x0F;
