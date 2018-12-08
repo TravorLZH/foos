@@ -28,6 +28,7 @@ struct inode {
 	uint8_t gid;
 	uint32_t size;
 	uint32_t ino;
+	uint32_t impl;		// Used by implementation
 	open_t open;
 	close_t close;
 	write_t write;

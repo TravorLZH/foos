@@ -23,6 +23,8 @@ struct rd_fileheader {
 
 extern struct inode *ramfs_init(void);
 extern struct dirent *ramfs_readdir(struct inode *node,size_t index);
+extern struct inode *ramfs_finddir(struct inode *node,char *name);
+extern int ramfs_read(struct inode *node,void *buf,size_t sz,off_t offset);
 #endif
 
 #endif
