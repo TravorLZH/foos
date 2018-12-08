@@ -9,7 +9,8 @@ QEMU=qemu-system-i386
 LDFLAGS=-melf_i386 --oformat=binary -Ttext=0
 DEST=$(CURDIR)
 
-.PHONY:	all all-subdirs install-libs run clean dep clean-dep ramdisk.img
+.PHONY:	all all-subdirs install-libs clean dep clean-dep ramdisk.img
+.IGNORE: run
 
 all:	all-subdirs ramdisk.img floppy.img
 
@@ -49,7 +50,6 @@ clean:
 	$(MAKE) -C libfs $@ RM=$(RM)
 	$(MAKE) -C liballoc $@
 	$(MAKE) -C tools $@
-
 
 dep:
 	$(MAKE) -C kernel $@ RM=$(RM)

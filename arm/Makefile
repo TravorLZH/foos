@@ -8,6 +8,8 @@ RM=rm
 QEMU=qemu-system-arm
 QEMUFLAGS=-M raspi2 -nographic
 
+.IGNORE: run
+
 all:	kernel.img
 
 kernel.img:	kernel.elf
