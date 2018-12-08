@@ -35,8 +35,13 @@ int vsprintf(char* buffer,const char *format,va_list vlist)
 				// %s: Print out string
 				case 's':
 				string_temp=va_arg(vlist,char*);
-				memcpy(buffer+offset,string_temp,strlen(string_temp));
-				offset+=strlen(string_temp);
+				if(string_temp!=NULL){
+					strcpy(buffer+offset,string_temp);
+					offset+=strlen(string_temp);
+				}else{
+					strcpy(buffer+offset,"(null)");
+					offset+=6;
+				}
 				break;
 				// Print out an int
 				case 'd':
