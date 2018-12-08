@@ -1,7 +1,6 @@
 #ifndef	RAMFS_H
 #define	RAMFS_H
 #include <inttypes.h>
-#include <foos/fs.h>
 
 /** File system driver for FOOS RAM Drive */
 #define	RD_HEADSIG	0xD158
@@ -20,6 +19,8 @@ struct rd_fileheader {
 } __attribute__((packed));
 
 #ifndef	FOOS_TOOLS
+#include <foos/fs.h>
+
 extern struct inode *ramfs_init(void);
 extern struct dirent *ramfs_readdir(struct inode *node,size_t index);
 #endif
