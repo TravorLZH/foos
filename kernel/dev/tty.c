@@ -69,24 +69,35 @@ void tty_writechar(struct tty *ptty,char c)
 {
 	uint16_t *ptr=VGA_BASE;
 	uint16_t current=tty_get_cursor();
-	uint16_t x=VGA_X(current),y=VGA_Y(current),i;
+	uint16_t i;
+	short x=VGA_X(current);
+	short y=VGA_Y(current);
 	ptr+=current;
 	switch(c){
 	case '\n':
 		y++;
 	case '\r':
-		current=VGA_COORD(0,y);
+		x=0;
+		break;
+	case '\t':
+		x=(x+8) & ~(8-1);
 		break;
 	case '\b':
 		*--ptr=0x0720;
-		current--;
+		x--;
 		break;
 	default:
 		*ptr=(ptty->color << 8)+c;
-		current++;
+		x++;
 	}
-	x=VGA_X(current);
-	y=VGA_Y(current);
+	if(x>=80){
+		x=0;
+		y++;
+	}
+	if(x<0){
+		x+=80;
+		y--;
+	}
 	if(y>=VGA_HEIGHT){
 		y=VGA_HEIGHT-1;
 		for(i=1;i<=y;i++){
@@ -100,6 +111,9 @@ void tty_writechar(struct tty *ptty,char c)
 		}
 	}
 	tty_update_cursor(ptty,VGA_COORD(x,y));
+	if(c!='\b'){
+		ptty->last=c;
+	}
 }
 
 size_t tty_writestring(struct tty *ptty,const char *string)

@@ -43,6 +43,7 @@ struct kbd_state{
 struct tty{
 	uint8_t color;
 	uint8_t cursor;
+	char last;	// Last printed character
 	char buf[512];
 	char *bufptr;
 	char *tmp;

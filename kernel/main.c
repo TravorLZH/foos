@@ -55,7 +55,7 @@ int kernel_main(struct kernel_conf *conf)
 		ent=fs_readdir(fs_root,0);
 		printf("%s/\n",fs_root->name);
 		do{
-			printf("|   %s\n",ent->name);
+			printf("|\t%s\n",ent->name);
 		}while(ent=fs_readdir(fs_root,++i));
 		dev_close(DEV_RAMDISK);
 	}
