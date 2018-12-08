@@ -1,7 +1,9 @@
 # Foos
 [![AppVeyor Branch](https://ci.appveyor.com/api/projects/status/github/TravorLZH/foos?svg=true)](https://ci.appveyor.com/project/TravorLZH/foos)
+[![Github Release](https://img.shields.io/github/tag/TravorLZH/foos.svg)](https://github.com/TravorLZH/foos/releases)
+[![Github License](https://img.shields.io/github/license/TravorLZH/foos.svg)](LICENSE)
 
-Another OS project because my TravorOS's code is too messy
+FOOS stands for `FOOS's Overcoming Operating System`
 
 ## Plan
 These are my little goals to make this OS
@@ -22,7 +24,7 @@ These are my little goals to make this OS
 - [x] RAM Drive
 - [ ] Floppy Disk Controller
 - [ ] Loadable Kernel Module
-- [ ] Virtual File System
+- [x] Virtual File System
 - [ ] Multitasking
 - [ ] User Space
 
@@ -42,4 +44,4 @@ $ make
 You can also type `make run` to play the OS if you have `qemu-system-i386`
 installed.
 ## Images
-This OS currently supports only floppy images that perfectly fits into a 1.44 MB 3.5" Floppy. You may try it on hard disk
+This OS currently supports only floppy images that perfectly fits into a 1.44 MB 3.5" Floppy. You may treat it as a hard disk image as well
