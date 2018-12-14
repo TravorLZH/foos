@@ -29,4 +29,18 @@ static inline void *memset(void *s,int c,size_t n)
 		"rep stosb"::"D"(s),"a"((uint8_t)c),"c"(n));
 	return s;
 }
+
+static inline int memcmp(const void *a,const void *b,size_t n)
+{
+	register int ret __asm__("eax");
+	__asm__("cld\n"
+		"repe cmpsb\n"
+		"je 1f\n"
+		"movl $1,%%eax\n"
+		"jl 1f\n"
+		"negl %%eax\n"
+		"1:"
+		:"=a"(ret):"0"(0),"D"(a),"S"(b),"c"(n));
+	return ret;
+}
 #endif

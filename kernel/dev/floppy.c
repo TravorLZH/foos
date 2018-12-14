@@ -1,3 +1,4 @@
+/* This floppy driver is not complete or even working */
 #include <dev/dma.h>
 #include <dev/floppy.h>
 #include <asm/ioports.h>

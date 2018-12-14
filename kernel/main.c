@@ -6,8 +6,6 @@
 #include <dev/tty.h>
 #include <dev/pit.h>
 #include <dev/ramdisk.h>
-#include <asm/ioports.h>
-#include <asm/cmos.h>
 #include <cpu/interrupt.h>
 #include <cpu/memory.h>
 #include <stdio.h>
@@ -15,35 +13,17 @@
 #include <string.h>
 
 extern int _puts(const char*);
+extern int shell_main(void);
 
 char buf[BUFSIZ];	// Buffer for everything
 uint8_t default_color;
 uint8_t white_on_black=0x0F;
 
-static const char* floppy_type[]={
-	"Not Applicable",
-	"360 KB 5.25\"",
-	"1.2 MB 5.25\"",
-	"720 KB 3.5\"",
-	"1.44 MB 3.5\"",
-	"2.88 MB 3.5\""
-};
-
 struct inode *fs_root=NULL;
-
-static void check_floppy(void)
-{
-	uint8_t val=cmos_read(0x10);
-	printf("Drive A: ");
-	puts(floppy_type[(val >> 4) & 0xF]);
-	printf("Drive B: ");
-	puts(floppy_type[val & 0xF]);
-}
 
 int kernel_main(struct kernel_conf *conf)
 {
 	int i=0;
-	struct dirent *ent=NULL;
 	struct inode *tmp=NULL;
 	size_t rd_size;
 	int_init();
@@ -52,7 +32,6 @@ int kernel_main(struct kernel_conf *conf)
 	pit_init(1000);
 	int_enable();
 	dev_open(DEV_TTY,0);
-	check_floppy();
 	if(!(conf->flags & KF_RAMDISK)){
 		puts("ramdisk: Not configured, so no ramdisk");
 	}
@@ -62,19 +41,16 @@ int kernel_main(struct kernel_conf *conf)
 	dev_ioctl(DEV_RAMDISK,RD_SETADDR,&conf->rd_start);
 	dev_ioctl(DEV_RAMDISK,RD_SETSIZE,&rd_size);
 	fs_root=ramfs_init();
-	ent=fs_readdir(fs_root,0);
-	puts("Files in ramdisk: (name, size in bytes)");
-	do{
-		tmp=fs_finddir(fs_root,ent->name);
-		printf("| %s\t| %d\n",tmp->name,tmp->size);
-	}while(ent=fs_readdir(fs_root,++i));
 	tmp=fs_finddir(fs_root,"greeting.txt");
+	fs_open(tmp,0);
 	i=fs_read(tmp,buf,tmp->size,0);
+	fs_close(tmp);
 	buf[tmp->size]='\0';
 	dev_ioctl(DEV_TTY,TTY_GETCOL,&default_color);
 	dev_ioctl(DEV_TTY,TTY_SETCOL,&white_on_black);
 	_puts(buf);
 	dev_ioctl(DEV_TTY,TTY_SETCOL,&default_color);
+	shell_main();
 	dev_close(DEV_RAMDISK);
 no_ramdisk:
 	dev_close(DEV_TTY);

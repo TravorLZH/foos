@@ -47,12 +47,14 @@ kmalloc.o: kmalloc.c ../include/foos/kmalloc.h ../include/inttypes.h \
 main.o: main.c ../include/foos/system.h ../include/inttypes.h \
  ../include/foos/kmalloc.h ../include/foos/device.h \
  ../include/foos/ramfs.h ../include/foos/fs.h ../include/dev/tty.h \
- ../include/dev/pit.h ../include/dev/ramdisk.h ../include/asm/ioports.h \
- ../include/asm/cmos.h ../include/cpu/interrupt.h ../include/cpu/memory.h \
- ../include/stdio.h ../include/stdarg.h ../include/stdlib.h \
- ../include/string.h
+ ../include/dev/pit.h ../include/dev/ramdisk.h ../include/cpu/interrupt.h \
+ ../include/cpu/memory.h ../include/stdio.h ../include/stdarg.h \
+ ../include/stdlib.h ../include/string.h
 pmem.o: pmem.c ../include/cpu/memory.h ../include/inttypes.h \
  ../include/foos/system.h ../include/foos/kmalloc.h
+shell.o: shell.c ../include/foos/fs.h ../include/inttypes.h \
+ ../include/asm/cmos.h ../include/stdio.h ../include/stdarg.h \
+ ../include/string.h
 vmem.o: vmem.c ../include/cpu/memory.h ../include/inttypes.h \
  ../include/cpu/interrupt.h ../include/foos/system.h \
  ../include/foos/kmalloc.h ../include/stdio.h ../include/stdarg.h \

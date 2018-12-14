@@ -43,6 +43,9 @@ struct dirent {
 	uint32_t ino;
 };
 
+/* Global Variables */
+extern struct inode *fs_root;
+
 extern int fs_open(struct inode*,int flags);
 extern int fs_close(struct inode*);
 extern int fs_write(struct inode*,const void*,size_t,off_t);
