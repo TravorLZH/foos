@@ -77,4 +77,5 @@ dev/ramdisk.o: dev/ramdisk.c ../include/foos/kmalloc.h ../include/inttypes.h \
 dev/tty.o: dev/tty.c ../include/dev/tty.h ../include/inttypes.h \
  ../include/foos/device.h ../include/foos/system.h \
  ../include/foos/kmalloc.h ../include/cpu/interrupt.h \
- ../include/asm/ioports.h ../include/string.h ../include/errno.h
+ ../include/asm/ioports.h ../include/string.h ../include/ctype.h \
+ ../include/errno.h

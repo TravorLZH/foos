@@ -6,7 +6,14 @@
 #include <asm/ioports.h>
 #include <inttypes.h>
 #include <string.h>
+#include <ctype.h>
 #include <errno.h>
+
+#define	CHECK_TTY(a) \
+	if((a)==NULL){ \
+		(a)=tty_current(); \
+	} \
+	current_tty=(a);
 
 static struct tty *current_tty=NULL;	// Caching the last-used TTY structure
 char init=0;
@@ -44,13 +51,12 @@ uint16_t tty_get_cursor(void)
 
 void tty_update_cursor(struct tty *ptr,uint16_t offset)
 {
-	if(ptr==NULL){
-		ptr=current_tty;
-	}else{
-		current_tty=ptr;
-	}
+	CHECK_TTY(ptr);
+	/* Set the lower 8 bits of offset */
 	outb(VGA_CMD,0xF);
 	outb(VGA_DATA,offset & 0xFF);
+
+	/* Set the higher 8 bits of offset */
 	outb(VGA_CMD,0xE);
 	outb(VGA_DATA,(offset >> 8) & 0xFF);
 	ptr->cursor=offset;
@@ -73,6 +79,8 @@ void tty_writechar(struct tty *ptty,char c)
 	short x=VGA_X(current);
 	short y=VGA_Y(current);
 	ptr+=current;
+
+	/* Process special characters */
 	switch(c){
 	case '\n':
 		y++;
@@ -90,26 +98,36 @@ void tty_writechar(struct tty *ptty,char c)
 		*ptr=(ptty->color << 8)+c;
 		x++;
 	}
+
+	/* Go to the newline if the line is full */
 	if(x>=80){
 		x=0;
 		y++;
 	}
+
+	/* Go back if the line is completely backspaced */
 	if(x<0){
 		x+=80;
 		y--;
 	}
+
+	/* This helps scroll the screen */
 	if(y>=VGA_HEIGHT){
 		y=VGA_HEIGHT-1;
+		/* We erase the first line and shift everything forward */
 		for(i=1;i<=y;i++){
 			memcpy(VGA_BASE+VGA_COORD(0,i-1),
 					VGA_BASE+VGA_COORD(0,i),
 					VGA_WIDTH*2);
 		}
+		/* And clean the last line */
 		uint16_t *last=VGA_BASE+VGA_COORD(0,y);
 		for(i=0;i<VGA_WIDTH;i++){
-			last[i]=0x0720;
+			last[i]=0x0720;	// space character, gray on black
 		}
 	}
+
+	// Move our dear cursor to the new place */
 	tty_update_cursor(ptty,VGA_COORD(x,y));
 	if(c!='\b'){
 		ptty->last=c;
@@ -131,6 +149,7 @@ int tty_init(void *reserved)
 		return -1;
 	}
 	init=1;
+	/* Make sure we initialize interrupts before this */
 	int_hook_handler(0x21,kbd_irq);
 	return 0;
 }
@@ -165,24 +184,6 @@ static const char scancode_set[]=
 	"??1234567890-=\b\tqwertyuiop[]\n?asdfghjkl;'`?\\zxcvbnm,./??? ?";
 static const char shift_set[]=
 	"..!@#$%^&*()_+\b\tQWERTYUIOP{}\n.ASDFGHJKL:\"~.|ZXCVBNM<>?.*. ?";
-
-static char toupper(char c)
-{
-	if(c>='a' && c<='z'){
-		return (c=c+'A'-'a');
-	}else{
-		return c;
-	}
-}
-
-static char tolower(char c)
-{
-	if(c>='A' && c<='Z'){
-		return (c=c+'a'-'A');
-	}else{
-		return c;
-	}
-}
 
 static char _decode(uint8_t code)
 {
@@ -261,10 +262,7 @@ static void kbd_irq(struct registers regs)
 
 char tty_readchar(struct tty *ptr)
 {
-	if(ptr==NULL){
-		ptr=tty_current();
-	}
-	current_tty=ptr;
+	CHECK_TTY(ptr);
 	while(!ptr->kbd.irq||ptr->kbd.special);
 	ptr->kbd.irq=0;
 	return _decode(inb(0x60));
@@ -272,12 +270,7 @@ char tty_readchar(struct tty *ptr)
 
 size_t tty_read(struct tty *ptr,char *buf,size_t len)
 {
-	// Flush before anything
-	if(ptr==NULL){
-		ptr=current_tty;
-	}else{
-		current_tty=ptr;
-	}
+	CHECK_TTY(ptr);
 	ptr->bufptr=ptr->buf;
 	while(!ptr->kbd.flush);	// Wait until the enter is pressed
 	ptr->kbd.flush=0;
@@ -287,7 +280,8 @@ size_t tty_read(struct tty *ptr,char *buf,size_t len)
 	return size;
 }
 
-/* Wrapping write_dev */
+/* Functions that start with `ttydev' are the hooks for HAL */
+
 size_t ttydev_write(struct device *dev,const void *buf,size_t len)
 {
 	struct tty *ptr=(struct tty*)dev->data;
@@ -308,6 +302,8 @@ int ttydev_open(struct device *dev,int flags)
 		return -EBUSY;
 	}
 	tty_init(NULL);
+
+	/* Allocate structure for teletype device */
 	ptr=(struct tty*)kmalloc(sizeof(struct tty));
 	tty_create(ptr);
 	dev->data=ptr;
@@ -326,6 +322,8 @@ int ttydev_ioctl(struct device *dev,int request,void *args)
 	struct tty *ptr=(struct tty*)dev->data;
 	uint16_t *cursor=NULL;
 	uint8_t *color=NULL;
+
+	/* Process TTY requests */
 	switch(request){
 	case TTY_CLEAR:
 		tty_clear(ptr);

@@ -35,7 +35,7 @@ clean-dep:
 	$(RM) -f Makefile_temp
 ### Dependencies
 conv.o: conv.c ../include/string.h ../include/inttypes.h \
- ../include/stdlib.h
+ ../include/ctype.h ../include/stdlib.h
 errno.o: errno.c ../include/errno.h
 input.o: input.c ../include/dev/tty.h ../include/inttypes.h \
  ../include/foos/device.h ../include/foos/system.h ../include/stdio.h \

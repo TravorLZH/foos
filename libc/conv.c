@@ -1,4 +1,5 @@
 #include <string.h>
+#include <ctype.h>
 #include <stdlib.h>
 
 int atoi(const char *nptr)
@@ -78,3 +79,20 @@ void itoh(uint32_t n,char* s)
 	}
 }
 
+int toupper(int c)
+{
+	if(c>='a' && c<='z'){
+		return (c=c+'A'-'a');
+	}else{
+		return c;
+	}
+}
+
+int tolower(int c)
+{
+	if(c>='A' && c<='Z'){
+		return (c=c+'a'-'A');
+	}else{
+		return c;
+	}
+}
