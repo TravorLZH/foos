@@ -32,6 +32,9 @@ int kernel_main(struct kernel_conf *conf)
 	/* Interrupts */
 	int_init();
 
+	/* Make sure we can put stuff on the screen */
+	dev_open(DEV_TTY,0);
+
 	/* Paging and Frames */
 	pmem_init(NULL);
 	vmem_init(NULL);
@@ -42,8 +45,6 @@ int kernel_main(struct kernel_conf *conf)
 	/* Enable interrupts and IRQs (For keyboards and timer) */
 	int_enable();
 
-	/* Make sure we can put stuff on the screen */
-	dev_open(DEV_TTY,0);
 
 	if(!(conf->flags & KF_RAMDISK)){
 		puts("ramdisk: Not available");

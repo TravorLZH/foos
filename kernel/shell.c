@@ -3,6 +3,7 @@
  * (e.g. Get status of floppy, list root directories, print file content)
  */
 #include <foos/fs.h>
+#include <foos/kmalloc.h>
 #include <asm/cmos.h>
 #include <stdio.h>
 #include <string.h>
@@ -71,6 +72,16 @@ loop:
 	}
 	if(!memcmp(buf,"cat ",4)){
 		cat_file(buf+4);
+		goto loop;
+	}
+	if(!strcmp(buf,"malloc")){
+		char *a=(char*)kmalloc(10);
+		printf("kmalloc(10): 0x%x\n",a);
+		kfree(a);
+		printf("kfree(0x%x)\n",a);
+		a=(char*)kmalloc(10);
+		printf("kmalloc(10) again: 0x%x\n",a);
+		kfree(a);
 		goto loop;
 	}
 	if(buf[0]!='\0'){

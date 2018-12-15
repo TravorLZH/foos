@@ -18,7 +18,7 @@ These are my little goals to make this OS
 - [x] VGA
 - [x] Virtual Memory Management
 - [x] Physical Memory Management (Frames, Page Frame Allocator)
-- [ ] Better `malloc()`
+- [x] Better `malloc()`
 - [x] Hardware Abstraction Layer (`dev_write()`, `dev_read()`, `dev_open()`,
 `dev_close()`, and `dev_ioctl()`)
 - [x] RAM Drive
