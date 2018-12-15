@@ -8,10 +8,10 @@
 #include <string.h>
 
 static struct inode *rd_files=NULL;
-static struct inode rd_root;
 static size_t file_base;
 static size_t rd_nfiles;
 static size_t rd_size;
+static struct inode *rd_root;
 struct dirent dirent;
 
 struct inode *ramfs_init(void)
@@ -29,11 +29,12 @@ struct inode *ramfs_init(void)
 	file_base*=sizeof(struct rd_fileheader);
 	file_base+=sizeof(struct rd_header);
 	puts("ramfs: Creating inode for `/'");
-	strcpy(rd_root.name,"ramdisk");
-	rd_root.flags=FS_DIR;
-	rd_root.readdir=ramfs_readdir;
-	rd_root.finddir=ramfs_finddir;
-	rd_root.ptr=NULL;
+	rd_root=(struct inode*)kmalloc(sizeof(struct inode));
+	strcpy(rd_root->name,"ramdisk");
+	rd_root->flags=FS_DIR;
+	rd_root->readdir=ramfs_readdir;
+	rd_root->finddir=ramfs_finddir;
+	rd_root->ptr=NULL;
 	rd_files=kmalloc(header->nfiles * sizeof(struct inode));
 	for(i=0;i<rd_nfiles;i++){
 		assert(files[i].magic==RD_FILESIG);
@@ -44,12 +45,12 @@ struct inode *ramfs_init(void)
 		rd_files[i].size=files[i].size;
 		rd_files[i].read=ramfs_read;
 	}
-	return &rd_root;
+	return rd_root;
 }
 
 struct dirent *ramfs_readdir(struct inode *node,size_t index)
 {
-	assert(node==&rd_root);
+	assert(node==rd_root);
 	if(index>=rd_nfiles){
 		return NULL;
 	}

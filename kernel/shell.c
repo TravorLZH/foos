@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-extern char buf[];
+extern char *buf;
 extern int _puts(const char*);
 
 static const char* floppy_type[]={

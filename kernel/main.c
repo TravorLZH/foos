@@ -15,7 +15,7 @@
 extern int _puts(const char*);
 extern int shell_main(void);
 
-char buf[BUFSIZ];	// Buffer for everything
+char *buf=NULL;
 
 /* Some color used by FOOS */
 uint8_t default_color;
@@ -45,6 +45,7 @@ int kernel_main(struct kernel_conf *conf)
 	/* Enable interrupts and IRQs (For keyboards and timer) */
 	int_enable();
 
+	buf=(char*)kmalloc(BUFSIZ);
 
 	if(!(conf->flags & KF_RAMDISK)){
 		puts("ramdisk: Not available");
