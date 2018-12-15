@@ -21,12 +21,10 @@ all-subdirs:	all-libs install-libs
 all-libs:
 	$(MAKE) -C libc CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
 	$(MAKE) -C libfs CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
-	$(MAKE) -C liballoc compile CC=$(CC) CFLAGS=-I../include AR=$(AR)
 
 install-libs:
 	$(MAKE) -C libc install DEST=$(DEST)
 	$(MAKE) -C libfs install DEST=$(DEST)
-	$(MAKE) -C liballoc install DEST=$(DEST)
 
 %.bin:	%.s
 	$(AS) --32 -o $(<:.s=.o) $<
@@ -48,7 +46,6 @@ clean:
 	$(MAKE) -C kernel $@ RM=$(RM)
 	$(MAKE) -C libc $@ RM=$(RM)
 	$(MAKE) -C libfs $@ RM=$(RM)
-	$(MAKE) -C liballoc $@
 	$(MAKE) -C tools $@
 
 dep:

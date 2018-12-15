@@ -1,6 +1,3 @@
-[submodule "liballoc"]
-	path = liballoc
-	url = https://github.com/TravorLZH/liballoc
 [submodule "tools"]
 	path = tools
 	url = https://github.com/TravorLZH/foos-tools
