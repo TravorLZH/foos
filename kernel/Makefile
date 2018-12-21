@@ -42,7 +42,8 @@ interrupt.o: interrupt.c ../include/foos/system.h ../include/inttypes.h \
  ../include/dev/pic.h ../include/string.h ../include/stdlib.h \
  ../include/stdio.h ../include/stdarg.h
 kmalloc.o: kmalloc.c ../include/foos/kmalloc.h ../include/inttypes.h \
- ../include/foos/system.h
+ ../include/foos/system.h ../include/assert.h ../include/errno.h \
+ ../include/stdio.h ../include/stdarg.h
 main.o: main.c ../include/foos/system.h ../include/inttypes.h \
  ../include/foos/kmalloc.h ../include/foos/device.h \
  ../include/foos/ramfs.h ../include/foos/fs.h ../include/dev/tty.h \
@@ -52,8 +53,8 @@ main.o: main.c ../include/foos/system.h ../include/inttypes.h \
 pmem.o: pmem.c ../include/cpu/memory.h ../include/inttypes.h \
  ../include/foos/system.h ../include/foos/kmalloc.h
 shell.o: shell.c ../include/foos/fs.h ../include/inttypes.h \
- ../include/asm/cmos.h ../include/stdio.h ../include/stdarg.h \
- ../include/string.h
+ ../include/foos/kmalloc.h ../include/asm/cmos.h ../include/stdio.h \
+ ../include/stdarg.h ../include/string.h
 vmem.o: vmem.c ../include/cpu/memory.h ../include/inttypes.h \
  ../include/cpu/interrupt.h ../include/foos/system.h \
  ../include/foos/kmalloc.h ../include/stdio.h ../include/stdarg.h \

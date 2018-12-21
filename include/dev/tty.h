@@ -21,6 +21,7 @@
 /* Keyboard */
 #define	MAX_SCANCODE	58
 #define	RELEASED(code)	((code) & 0x80)
+#define	TAB	0x0F	// TAB cannot be used by keyboard now
 #define	CTRL	0x1D
 #define	LSHIFT	0x2A
 #define	RSHIFT	0x36

@@ -221,6 +221,9 @@ static void kbd_irq(struct registers regs)
 		}
 	}else{
 		switch(scancode){
+		case TAB:
+			/* Suppose tab is not allowed */
+			break;
 		case CTRL:
 			ptr->kbd.ctrl=1;
 			break;

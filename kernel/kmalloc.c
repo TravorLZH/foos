@@ -81,6 +81,11 @@ static struct block *lookup(struct block *blk,size_t size,size_t align)
 		split(*ptr,size);
 		return *ptr;
 	}
+	if((*ptr)->size == 0 && !align){
+		(*ptr)->size=size;
+		(*ptr)->used=1;
+		return *ptr;
+	}
 	return lookup(*ptr,size,align);
 }
 
@@ -114,4 +119,17 @@ void kfree(void *ptr)
 		merge(blk->prev);
 	}
 	merge(blk);
+}
+
+static void do_block(struct block *blk)
+{
+	printf("block at 0x%x: used=%d, size=%d\n",blk,blk->used,blk->size);
+	if(blk->next){
+		do_block(blk->next);
+	}
+}
+
+void kmalloc_info(void)
+{
+	do_block(root);
 }

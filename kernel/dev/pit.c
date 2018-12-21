@@ -14,8 +14,8 @@ int pit_delay(uint32_t _ticks)
 		errno=EBUSY;
 		return -errno;
 	}
-	ticks=_ticks;
 	busy=1;
+	ticks=_ticks;
 	while(busy);
 	return 0;
 }

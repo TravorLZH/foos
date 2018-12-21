@@ -10,6 +10,7 @@
 
 extern char *buf;
 extern int _puts(const char*);
+extern void kmalloc_info(void);
 
 static const char* floppy_type[]={
 	"Not Applicable",
@@ -29,7 +30,15 @@ static void check_floppy(void)
 	puts(floppy_type[val & 0xF]);
 }
 
-void cat_file(char *ptr)
+static void check_memory(void)
+{
+	uint32_t low_mem=cmos_read(0x16) << 8;
+	low_mem |= cmos_read(0x15);
+	printf("low memory: 0 - 0x%x\n",low_mem << 10);
+	kmalloc_info();
+}
+
+static void cat_file(char *ptr)
 {
 	struct inode *file=fs_finddir(fs_root,ptr);
 	if(file==NULL){
@@ -53,6 +62,19 @@ void list_directory(void)
 		tmp=fs_finddir(fs_root,ent->name);
 		printf("| %s\t| %d\n",tmp->name,tmp->size);
 	}while(ent=fs_readdir(fs_root,++i));
+}
+
+static void check_time(void)
+{
+	/* These are BCDs */
+	uint16_t year=cmos_read(0x32) << 8;
+	year |= cmos_read(0x09);
+	uint8_t month=cmos_read(0x08);
+	uint8_t day=cmos_read(0x07);
+	uint8_t hour=cmos_read(0x04);
+	uint8_t minute=cmos_read(0x02);
+	uint8_t second=cmos_read(0x00);
+	printf("%x/%x/%x %x:%x:%x\n",year,month,day,hour,minute,second);
 }
 
 int shell_main(void)
@@ -82,6 +104,14 @@ loop:
 		a=(char*)kmalloc(10);
 		printf("kmalloc(10) again: 0x%x\n",a);
 		kfree(a);
+		goto loop;
+	}
+	if(!strcmp(buf,"mem")){
+		check_memory();
+		goto loop;
+	}
+	if(!strcmp(buf,"time")){
+		check_time();
 		goto loop;
 	}
 	if(buf[0]!='\0'){

@@ -12,7 +12,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Non-POSIX function is not declared in header */
 extern int _puts(const char*);
+
+/* Kernel shell entry (I wouldn't put it in a separate header) */
 extern int shell_main(void);
 
 char *buf=NULL;
@@ -45,6 +48,7 @@ int kernel_main(struct kernel_conf *conf)
 	/* Enable interrupts and IRQs (For keyboards and timer) */
 	int_enable();
 
+	/* Allocate the general-purpose kernel buffer */
 	buf=(char*)kmalloc(BUFSIZ);
 
 	if(!(conf->flags & KF_RAMDISK)){
