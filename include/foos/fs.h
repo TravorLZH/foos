@@ -21,7 +21,7 @@ typedef struct dirent *(*readdir_t)(struct inode*,size_t);
 typedef struct inode *(*finddir_t)(struct inode*,char*);
 
 struct inode {
-	char name[128];
+	char name[32];
 	uint8_t flags;
 	uint8_t mask;
 	uint8_t uid;
@@ -39,7 +39,7 @@ struct inode {
 };
 
 struct dirent {
-	char name[128];
+	char name[32];
 	uint32_t ino;
 };
 

@@ -25,6 +25,10 @@ struct device {
 	devioctl_t ioctl;
 };
 
+/* List of FOOS devices can be accessed here */
+extern struct device devs[];
+extern size_t ndevs;
+
 extern size_t dev_write(int no,const void *buf,size_t sz);
 extern size_t dev_read(int no,void *buf,size_t sz);
 extern int dev_open(int no,int flags);

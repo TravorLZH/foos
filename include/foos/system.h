@@ -5,6 +5,9 @@
 #define	DATASEG	0x08
 #define	NULL	(void*)0
 #define	hang()	while(1)
+
+#define	ARRAY_SIZE(x)	(sizeof((x)) / sizeof((x)[0]))
+
 #ifndef	BUFSIZ
 #define	BUFSIZ	512
 #endif

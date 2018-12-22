@@ -23,6 +23,8 @@ struct device devs[]={
 	}
 };
 
+size_t ndevs=ARRAY_SIZE(devs);
+
 size_t dev_write(int no,const void *buf,size_t len)
 {
 	struct device *ptr=devs+no;

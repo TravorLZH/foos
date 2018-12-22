@@ -54,7 +54,7 @@ pmem.o: pmem.c ../include/cpu/memory.h ../include/inttypes.h \
  ../include/foos/system.h ../include/foos/kmalloc.h
 shell.o: shell.c ../include/foos/fs.h ../include/inttypes.h \
  ../include/foos/kmalloc.h ../include/asm/cmos.h ../include/stdio.h \
- ../include/stdarg.h ../include/string.h
+ ../include/stdarg.h ../include/string.h ../include/assert.h
 vmem.o: vmem.c ../include/cpu/memory.h ../include/inttypes.h \
  ../include/cpu/interrupt.h ../include/foos/system.h \
  ../include/foos/kmalloc.h ../include/stdio.h ../include/stdarg.h \

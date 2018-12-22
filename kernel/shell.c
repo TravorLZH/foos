@@ -7,6 +7,7 @@
 #include <asm/cmos.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 extern char *buf;
 extern int _puts(const char*);
@@ -20,6 +21,12 @@ static const char* floppy_type[]={
 	"1.44 MB 3.5\"",
 	"2.88 MB 3.5\""
 };
+
+static const char* file_type[]={
+	NULL,"file","dir","chardev","blkdev","pipe"
+};
+
+static const char hello_world[]="Hello world\n";
 
 static void check_floppy(void)
 {
@@ -44,6 +51,9 @@ static void cat_file(char *ptr)
 	if(file==NULL){
 		printf("%s: No such file or directory\n",ptr);
 		return;
+	}else if(file->flags & FS_DIR){
+		printf("%s: Is a directory\n",ptr);
+		return;
 	}
 	fs_open(file,0);
 	fs_read(file,buf,file->size,0);
@@ -51,17 +61,26 @@ static void cat_file(char *ptr)
 	fs_close(file);
 }
 
-void list_directory(void)
+void list_directory(struct inode *dir)
 {
-	int i=0;
+	int i;
 	struct dirent *ent=NULL;
 	struct inode *tmp=NULL;
-	ent=fs_readdir(fs_root,0);
-	puts("Files in ramdisk: (name, size in bytes)");
-	do{
-		tmp=fs_finddir(fs_root,ent->name);
-		printf("| %s\t| %d\n",tmp->name,tmp->size);
-	}while(ent=fs_readdir(fs_root,++i));
+	if(dir==NULL){
+		puts("No such file or directory");
+		return;
+	}
+	if(!(dir->flags & FS_DIR)){
+		printf("%s: Not a directory\n",dir->name);
+		return;
+	}
+	printf("%d files in `%s':\n",dir->impl,dir->name);
+	for(i=0;i<dir->impl;i++){
+		ent=fs_readdir(dir,i);
+		tmp=fs_finddir(dir,ent->name);
+		printf("%s\t%s\t%d bytes\n",file_type[tmp->flags & 0xF],
+				tmp->name,tmp->size);
+	}
 }
 
 static void check_time(void)
@@ -77,6 +96,24 @@ static void check_time(void)
 	printf("%x/%x/%x %x:%x:%x\n",year,month,day,hour,minute,second);
 }
 
+static void list_dev(void)
+{
+	struct inode *devdir=fs_finddir(fs_root,"dev");
+	int i=0;
+	struct dirent *dev;
+	puts("FOOS devices:");
+	while(dev=fs_readdir(devdir,i++)){
+		printf("%d: %s\n",dev->ino,dev->name);
+	}
+}
+
+static void test_fsdev(void)
+{
+	struct inode *dev=fs_finddir(fs_root,"dev");
+	struct inode *tty=fs_finddir(dev,"tty");
+	fs_write(tty,hello_world,sizeof(hello_world)-1,0);
+}
+
 int shell_main(void)
 {
 	putchar('\n');
@@ -84,8 +121,16 @@ loop:
 	_puts("> ");
 	memset(buf,0,BUFSIZ);
 	gets(buf);
-	if(!strcmp(buf,"ls")){
-		list_directory();
+	if(!memcmp(buf,"ls",2)){
+		if(strlen(buf)<=3){
+			list_directory(fs_root);
+		}else{
+			list_directory(fs_finddir(fs_root,buf+3));
+		}
+		goto loop;
+	}
+	if(!strcmp(buf,"devs")){
+		list_dev();
 		goto loop;
 	}
 	if(!strcmp(buf,"floppy")){
@@ -94,6 +139,10 @@ loop:
 	}
 	if(!memcmp(buf,"cat ",4)){
 		cat_file(buf+4);
+		goto loop;
+	}
+	if(!strcmp(buf,"tty")){
+		test_fsdev();
 		goto loop;
 	}
 	if(!strcmp(buf,"malloc")){

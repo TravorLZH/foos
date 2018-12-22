@@ -5,7 +5,7 @@
 
 #define	FIX_DEVICE(x,f,...) \
 	if(x->flags==FS_CHAR||x->flags==FS_BLK){ \
-		return dev_##f(x->ino,__VA_ARGS__); \
+		return dev_##f(x->impl,__VA_ARGS__); \
 	}
 
 int fs_open(struct inode *node,int flags)
@@ -30,7 +30,6 @@ int fs_close(struct inode *node)
 
 int fs_write(struct inode *node,const void *buf,size_t sz,off_t off)
 {
-	FIX_DEVICE(node,write,(char*)buf+off,sz)
 	if(node->write)
 		return node->write(node,buf,sz,off);
 	else
@@ -39,7 +38,6 @@ int fs_write(struct inode *node,const void *buf,size_t sz,off_t off)
 
 int fs_read(struct inode *node,void *buf,size_t sz,off_t off)
 {
-	FIX_DEVICE(node,read,(char*)buf+off,sz)
 	if(node->read)
 		return node->read(node,buf,sz,off);
 	else
