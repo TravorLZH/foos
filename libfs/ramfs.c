@@ -70,7 +70,7 @@ struct dirent *ramfs_readdir(struct inode *node,size_t index)
 	return &dirent;
 }
 
-struct inode *ramfs_finddir(struct inode *node,char *name)
+struct inode *ramfs_finddir(struct inode *node,const char *name)
 {
 	int i;
 	for(i=0;i<node->impl;i++){

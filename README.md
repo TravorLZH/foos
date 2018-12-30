@@ -39,9 +39,10 @@ $ make dep
 $ make
 ```
 
-> This OS can successfully be built on Termux without libgcc
+> This OS can successfully be built without the support of libgcc
 
 You can also type `make run` to play the OS if you have `qemu-system-i386`
 installed.
 ## Images
-This OS currently supports only floppy images that perfectly fits into a 1.44 MB 3.5" Floppy. You may treat it as a hard disk image as well
+This OS currently supports only floppy images that perfectly fits into a
+1.44 MB 3.5" Floppy. You may treat it as a hard disk image as well

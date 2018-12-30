@@ -32,3 +32,19 @@ int strcmp(const char *s1,const char *s2)
 	}
 	return ret;
 }
+
+size_t strspn(const char *str,const char *accept)
+{
+	const char *a=NULL,*b=NULL;
+	size_t count=0;
+	for(a=str;*a;a++){
+		for(b=accept;*b;b++){
+			if(*a==*b)
+				break;
+		}
+		if(*b=='\0')
+			return count;
+		count++;
+	}
+	return count;
+}

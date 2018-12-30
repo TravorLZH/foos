@@ -1,10 +1,13 @@
 #ifndef	STRING_H
 #define	STRING_H
 #include <inttypes.h>
+#include <foos/system.h>
 
 extern char *strrev(char *str);
 extern char *strcpy(char *to,const char *from);
 extern int strcmp(const char *s1,const char *s2);
+extern char *strtok(char *s,const char *delim);
+extern size_t strspn(const char *str,const char *accept);
 
 static inline int strlen(const char *s)
 {

@@ -18,7 +18,7 @@ typedef int (*close_t)(struct inode*);
 typedef int (*write_t)(struct inode*,const void*,size_t,off_t);
 typedef int (*read_t)(struct inode*,void*,size_t,off_t);
 typedef struct dirent *(*readdir_t)(struct inode*,size_t);
-typedef struct inode *(*finddir_t)(struct inode*,char*);
+typedef struct inode *(*finddir_t)(struct inode*,const char*);
 
 struct inode {
 	char name[32];
@@ -51,5 +51,6 @@ extern int fs_close(struct inode*);
 extern int fs_write(struct inode*,const void*,size_t,off_t);
 extern int fs_read(struct inode*,void*,size_t,off_t);
 extern struct dirent *fs_readdir(struct inode*,size_t);
-extern struct inode *fs_finddir(struct inode*,char*);
+extern struct inode *fs_finddir(struct inode*,const char*);
+extern struct inode *fs_lookup(const char *path);
 #endif

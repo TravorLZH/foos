@@ -61,7 +61,7 @@ static void cat_file(char *ptr)
 	fs_close(file);
 }
 
-void list_directory(struct inode *dir)
+static void list_directory(struct inode *dir)
 {
 	int i;
 	struct dirent *ent=NULL;
@@ -70,7 +70,7 @@ void list_directory(struct inode *dir)
 		puts("No such file or directory");
 		return;
 	}
-	if(!(dir->flags & FS_DIR)){
+	if((dir->flags & 0x7)!=FS_DIR){
 		printf("%s: Not a directory\n",dir->name);
 		return;
 	}
@@ -96,7 +96,7 @@ static void check_time(void)
 	printf("%x/%x/%x %x:%x:%x\n",year,month,day,hour,minute,second);
 }
 
-static void list_dev(void)
+static void list_devs(void)
 {
 	struct inode *devdir=fs_finddir(fs_root,"dev");
 	int i=0;
@@ -109,13 +109,69 @@ static void list_dev(void)
 
 static void test_fsdev(void)
 {
-	struct inode *dev=fs_finddir(fs_root,"dev");
-	struct inode *tty=fs_finddir(dev,"tty");
+	struct inode *tty=fs_lookup("/dev/tty");
+	if(tty==NULL){
+		puts("tty not found!");
+		return;
+	}
 	fs_write(tty,hello_world,sizeof(hello_world)-1,0);
+}
+
+static void test_strtok(void)
+{
+	char test[]="/dev/tty";
+	char delim[]="/";
+	char *ptr=NULL;
+	printf("Tokenizing `%s' by `%s'\n",test,delim);
+	puts(strtok(test,delim));
+	while(ptr=strtok(NULL,delim))
+		puts(ptr);
+}
+
+static void test_malloc(void)
+{
+	char *a=(char*)kmalloc(10);
+	printf("kmalloc(10): 0x%x\n",a);
+	kfree(a);
+	printf("kfree(0x%x)\n",a);
+	a=(char*)kmalloc(10);
+	printf("kmalloc(10) again: 0x%x\n",a);
+	kfree(a);
+}
+
+static void shell_help(void);
+
+struct cmd_handler {
+	char cmd[16];
+	char description[32];
+	void (*handle)(void);
+};
+
+struct cmd_handler handlers[]={
+	{"help","print this message",shell_help},
+	{"ls [FILE]","list directory contents",NULL},
+	{"cat [FILE]","print out the contents of a file",NULL},
+	{"devs","list available FOOS devices",list_devs},
+	{"floppy","check floppy status",check_floppy},
+	{"time","get the current time",check_time},
+	{"mem","print the status of kernel heap",check_memory},
+	{"tty","write `Hello world' to /dev/tty",test_fsdev},
+	{"tok","test tokenizing strings",test_strtok},
+	{"malloc","test the efficiency of malloc()",test_malloc}
+};
+
+int nhandlers=ARRAY_SIZE(handlers);
+
+static void shell_help(void)
+{
+	int i;
+	for(i=0;i<nhandlers;i++)
+		printf("%s - %s\n",handlers[i].cmd,handlers[i].description);
 }
 
 int shell_main(void)
 {
+	int i;
 	putchar('\n');
 loop:
 	_puts("> ");
@@ -125,43 +181,23 @@ loop:
 		if(strlen(buf)<=3){
 			list_directory(fs_root);
 		}else{
-			list_directory(fs_finddir(fs_root,buf+3));
+			list_directory(fs_lookup(buf+3));
 		}
-		goto loop;
-	}
-	if(!strcmp(buf,"devs")){
-		list_dev();
-		goto loop;
-	}
-	if(!strcmp(buf,"floppy")){
-		check_floppy();
 		goto loop;
 	}
 	if(!memcmp(buf,"cat ",4)){
 		cat_file(buf+4);
 		goto loop;
 	}
-	if(!strcmp(buf,"tty")){
-		test_fsdev();
-		goto loop;
-	}
-	if(!strcmp(buf,"malloc")){
-		char *a=(char*)kmalloc(10);
-		printf("kmalloc(10): 0x%x\n",a);
-		kfree(a);
-		printf("kfree(0x%x)\n",a);
-		a=(char*)kmalloc(10);
-		printf("kmalloc(10) again: 0x%x\n",a);
-		kfree(a);
-		goto loop;
-	}
-	if(!strcmp(buf,"mem")){
-		check_memory();
-		goto loop;
-	}
-	if(!strcmp(buf,"time")){
-		check_time();
-		goto loop;
+	for(i=0;i<nhandlers;i++){
+		if(!strcmp(buf,handlers[i].cmd)){
+			if(handlers[i].handle)
+				handlers[i].handle();
+			else
+				printf("No handler found for `%s'\n",
+						handlers[i].cmd);
+			goto loop;
+		}
 	}
 	if(buf[0]!='\0'){
 		printf("%s: Unknown command\n",buf);
