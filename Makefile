@@ -9,10 +9,11 @@ QEMU=qemu-system-i386
 LDFLAGS=-melf_i386 --oformat=binary -Ttext=0
 DEST=$(CURDIR)
 
-.PHONY:	all all-subdirs install-libs clean dep clean-dep ramdisk.img
+.PHONY:	all all-subdirs install-libs clean dep clean-dep ramdisk.img \
+	ramdisk2.img
 .IGNORE: run
 
-all:	all-subdirs ramdisk.img floppy.img
+all:	all-subdirs ramdisk.img ramdisk2.img floppy.img
 
 all-subdirs:	all-libs install-libs
 	$(MAKE) -C kernel CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
@@ -31,7 +32,10 @@ install-libs:
 	$(LD) $(LDFLAGS) -o $@ $(<:.s=.o)
 
 ramdisk.img:
-	tools/mkdisk ramdisk.img disk
+	tools/mkdisk $@ disk
+
+ramdisk2.img:
+	tar cvf $@ disk
 
 floppy.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
 	dd if=/dev/zero status=noxfer of=$@ count=2880

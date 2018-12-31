@@ -63,9 +63,13 @@ int kernel_main(struct kernel_conf *conf)
 	dev_ioctl(DEV_RAMDISK,RD_SETADDR,&conf->rd_start);
 	dev_ioctl(DEV_RAMDISK,RD_SETSIZE,&rd_size);
 
+#ifndef	USE_TARFS
 	/* Initialize file system for ramdisk */
 	fs_root=ramfs_init();
-
+#else
+	/* Initialize tar (Tape ARchiving) file system */
+	fs_root=tarfs_init(conf->rd_start);
+#endif
 	/* Print the greeting message */
 	tmp=fs_finddir(fs_root,"greeting.txt");
 	fs_open(tmp,0);
