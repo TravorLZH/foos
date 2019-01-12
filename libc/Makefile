@@ -21,6 +21,7 @@ clean:
 	$(RM) -rf *.o *.a
 
 install:
+	mkdir -p $(DEST)/lib
 	install -c libc.a $(DEST)/lib
 
 dep:

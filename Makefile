@@ -45,6 +45,7 @@ run:
 	$(QEMU) -d guest_errors -fda floppy.img -hda ramdisk.img
 
 clean:
+	$(RM) -rf lib/
 	$(RM) -rf *.img *.iso
 	$(RM) -rf boot/*.bin boot/*.o
 	$(MAKE) -C kernel $@ RM=$(RM)

@@ -19,6 +19,7 @@ clean:
 	$(RM) -rf *.o *.a
 
 install:
+	mkdir -p $(DEST)/lib
 	install -c libfs.a $(DEST)/lib
 
 dep:
