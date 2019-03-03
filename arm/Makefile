@@ -25,4 +25,4 @@ run:
 	$(QEMU) $(QEMUFLAGS) -kernel kernel.img
 
 clean:
-	$(RM) -rf *.img *.o
+	$(RM) -rf *.img *.o *.elf
