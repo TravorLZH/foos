@@ -13,7 +13,7 @@ DEST=$(CURDIR)
 	ramdisk2.img
 .IGNORE: run
 
-all:	all-subdirs ramdisk.img ramdisk2.img floppy.img
+all:	all-subdirs ramdisk.img ramdisk2.img bootdisk.img
 
 all-subdirs:	all-libs install-libs
 	$(MAKE) -C kernel CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
@@ -37,12 +37,12 @@ ramdisk.img:
 ramdisk2.img:
 	tar cvf $@ disk
 
-floppy.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
-	dd if=/dev/zero status=noxfer of=$@ count=2880
+bootdisk.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
+	dd if=/dev/zero status=noxfer of=$@ count=1024
 	cat $^ | dd status=noxfer conv=notrunc of=$@
 
 run:
-	$(QEMU) -d guest_errors -fda floppy.img -hda ramdisk.img
+	$(QEMU) -d guest_errors -hda bootdisk.img -hdb ramdisk.img
 
 clean:
 	$(RM) -rf lib/

@@ -45,8 +45,9 @@ You can also type `make run` to play the OS if you have `qemu-system-i386`
 installed.
 
 ## Images
-FOOS currently supports only floppy images that perfectly fits into a
-1.44 MB 3.5" Floppy. You may treat it as a hard disk image as well
+Harddisk images are supported:
+* *bootdisk.img:* 1st hard disk channel (DAP is used to load _system_)
+* *ramdisk.img:* 2nd hard disk channel
 
 ## RAM Disk
 FOOS has two filesystem models. One is made from scratch that does not support

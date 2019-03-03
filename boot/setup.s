@@ -6,16 +6,16 @@ CODESEG=0x8
 PMBASE=0x90200
 SYSSEG=0x1000
 SYSSIZE=0x6000
-RAMDISK=0x80	# Load RAM Disk from C:
+RAMDISK=0x81	# ramdisk in harddisk #2
 RD_SECTORS=1
 RDSEG=0x3000
 RDEND=0x4000
 # Kernel configuration is placed in 0x80000
 KCONFSEG=0x8000
 # The following variable are the offset from KCONFSEG:0000
-KCONF_FLAGS=0		# Flags: bit[1:0] means RAM Disk enabled
-KCONF_RAMDISKSTART=4	# RAM Disk start address
-KCONF_RAMDISKEND=8	# RAM Disk end address
+KCONF_FLAGS=0		# Flags: bit[1:0] means ramdisk enabled
+KCONF_RAMDISKSTART=4	# ramdisk start address
+KCONF_RAMDISKEND=8	# ramdisk end address
 
 .globl	_start
 _start:
@@ -110,7 +110,7 @@ gdt_descriptor:
 	.long	gdt_start+PMBASE
 # Strings
 load_rd:
-	.ascii	"Loading RAM Disk..."
+	.ascii	"Loading ramdisk..."
 	.byte	0x0
 no_rd:
 	.ascii	"[Not Available]"
