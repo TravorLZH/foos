@@ -31,6 +31,8 @@ extern void int_hook_handler(uint8_t no,inthandler_t handler);
 
 #define	int_disable() \
 	__asm__("cli");
+extern void irq_enable(uint8_t irq);
+extern void irq_disable(uint8_t irq);
 
 /* Hooks of each interrupts */
 extern void int0(void);

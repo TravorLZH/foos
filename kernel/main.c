@@ -4,6 +4,7 @@
 #include <foos/device.h>
 #include <foos/ramfs.h>
 #include <dev/tty.h>
+#include <dev/pic.h>
 #include <dev/pit.h>
 #include <dev/ramdisk.h>
 #include <cpu/interrupt.h>
@@ -85,7 +86,9 @@ int kernel_main(struct kernel_conf *conf)
 	shell_main();
 
 	/* De-initialize FOOS devices */
+	puts("kernel: Start halting system");
 	dev_close(DEV_RAMDISK);
 	dev_close(DEV_TTY);
+	pic_disable();
 	return 0;
 }

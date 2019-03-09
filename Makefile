@@ -44,6 +44,9 @@ bootdisk.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
 run:
 	$(QEMU) -d guest_errors -hda bootdisk.img -hdb ramdisk.img
 
+run-term:
+	$(QEMU) -d guest_errors -hda bootdisk.img -hdb ramdisk.img -curses
+
 clean:
 	$(RM) -rf lib/
 	$(RM) -rf *.img *.iso

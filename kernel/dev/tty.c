@@ -151,6 +151,7 @@ int tty_init(void *reserved)
 	init=1;
 	/* Make sure we initialize interrupts before this */
 	int_hook_handler(0x21,kbd_irq);
+	irq_enable(0x1);	// Enable IRQ1
 	return 0;
 }
 
@@ -317,6 +318,7 @@ int ttydev_close(struct device *dev)
 {
 	kfree(dev->data);
 	dev->data=NULL;
+	irq_disable(0x1);	// Disable keyboard IRQ
 	return 0;
 }
 

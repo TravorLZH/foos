@@ -27,6 +27,16 @@ void pic_send_eoi(uint8_t irq)
 	outb(PIC1_CMD,PIC_EOI);
 }
 
+void pic_mask(uint8_t pic,uint8_t offset)
+{
+	outb(pic+1,inb(pic+1) | (1<<offset));
+}
+
+void pic_unmask(uint8_t pic,uint8_t offset)
+{
+	outb(pic+1,inb(pic+1) & ~(1<<offset));
+}
+
 void pic_disable(void)
 {
 	outb(PIC1_DATA,0xFF);

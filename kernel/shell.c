@@ -157,7 +157,8 @@ struct cmd_handler handlers[]={
 	{"mem","print the status of kernel heap",check_memory},
 	{"tty","write `Hello world' to /dev/tty",test_fsdev},
 	{"tok","test tokenizing strings",test_strtok},
-	{"malloc","test the efficiency of malloc()",test_malloc}
+	{"malloc","test the efficiency of malloc()",test_malloc},
+	{"exit","quit the shell",NULL}
 };
 
 int nhandlers=ARRAY_SIZE(handlers);
@@ -169,6 +170,7 @@ static void shell_help(void)
 		printf("%s - %s\n",handlers[i].cmd,handlers[i].description);
 }
 
+/* TODO: This should become a separate process after multitasking implemented */
 int shell_main(void)
 {
 	int i;
@@ -177,6 +179,9 @@ loop:
 	_puts("> ");
 	memset(buf,0,BUFSIZ);
 	gets(buf);
+	if(!strcmp(buf,"exit")){
+		return 0;	// Quit the shell and probably halts the system
+	}
 	if(!memcmp(buf,"ls",2)){
 		if(strlen(buf)<=3){
 			list_directory(fs_root);

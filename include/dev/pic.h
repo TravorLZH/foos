@@ -22,5 +22,8 @@
 #define	ICW4_SFNM	0x10	/* Special fully nested (not) */
 
 extern void pic_remap(uint8_t offset1,uint8_t offset2);
+extern void pic_disable(void);
+extern void pic_mask(uint8_t pic,uint8_t offset);
+extern void pic_unmask(uint8_t pic,uint8_t offset);
 extern void pic_send_eoi(uint8_t irq);
 #endif

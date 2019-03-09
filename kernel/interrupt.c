@@ -131,6 +131,16 @@ static void irq_init(void)
 	idt_hook(47,irq15,CODESEG,0x8E);
 }
 
+void irq_disable(uint8_t no)
+{
+	pic_mask(no<8 ? PIC1:PIC2,no%8);
+}
+
+void irq_enable(uint8_t no)
+{
+	pic_unmask(no<8 ? PIC1:PIC2,no%8);
+}
+
 void irq_handler(struct registers regs)
 {
 	pic_send_eoi(regs.int_no-0x20);
