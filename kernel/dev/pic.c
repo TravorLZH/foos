@@ -1,8 +1,11 @@
 #include <asm/ioports.h>
+#include <dev/serial.h>
 #include <dev/pic.h>
 
 void pic_remap(uint8_t offset1,uint8_t offset2)
 {
+	serial_printf("[pic] master pic offset=0x%x, slave pic offset=0x%x\n",
+			offset1,offset2);
 	uint8_t mask,mask2;
 	mask=inb(PIC1_DATA);
 	mask2=inb(PIC2_DATA);
@@ -41,4 +44,5 @@ void pic_disable(void)
 {
 	outb(PIC1_DATA,0xFF);
 	outb(PIC2_DATA,0xFF);
+	serial_print("[pic] disabled\n");
 }

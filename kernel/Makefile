@@ -42,12 +42,13 @@ interrupt.o: interrupt.c ../include/foos/system.h ../include/inttypes.h \
  ../include/dev/pic.h ../include/string.h ../include/stdlib.h \
  ../include/stdio.h ../include/stdarg.h
 kmalloc.o: kmalloc.c ../include/foos/kmalloc.h ../include/inttypes.h \
- ../include/foos/system.h ../include/assert.h ../include/errno.h \
- ../include/stdio.h ../include/stdarg.h
+ ../include/foos/system.h ../include/dev/serial.h ../include/assert.h \
+ ../include/errno.h ../include/stdio.h ../include/stdarg.h
 main.o: main.c ../include/foos/system.h ../include/inttypes.h \
  ../include/foos/kmalloc.h ../include/foos/device.h \
- ../include/foos/ramfs.h ../include/foos/fs.h ../include/dev/tty.h \
- ../include/dev/pit.h ../include/dev/ramdisk.h ../include/cpu/interrupt.h \
+ ../include/foos/ramfs.h ../include/foos/fs.h ../include/dev/serial.h \
+ ../include/dev/tty.h ../include/dev/pic.h ../include/dev/pit.h \
+ ../include/dev/ramdisk.h ../include/cpu/interrupt.h \
  ../include/cpu/memory.h ../include/stdio.h ../include/stdarg.h \
  ../include/stdlib.h ../include/string.h
 pmem.o: pmem.c ../include/cpu/memory.h ../include/inttypes.h \
@@ -62,12 +63,12 @@ vmem.o: vmem.c ../include/cpu/memory.h ../include/inttypes.h \
  ../include/string.h
 dev/device.o: dev/device.c ../include/foos/device.h ../include/foos/system.h \
  ../include/inttypes.h ../include/dev/tty.h ../include/dev/ramdisk.h \
- ../include/errno.h
+ ../include/errno.h ../include/stdio.h ../include/stdarg.h
 dev/floppy.o: dev/floppy.c ../include/dev/dma.h ../include/dev/floppy.h \
  ../include/inttypes.h ../include/asm/ioports.h \
  ../include/cpu/interrupt.h ../include/stdio.h ../include/stdarg.h
 dev/pic.o: dev/pic.c ../include/asm/ioports.h ../include/inttypes.h \
- ../include/dev/pic.h
+ ../include/dev/serial.h ../include/dev/pic.h
 dev/pit.o: dev/pit.c ../include/dev/pit.h ../include/inttypes.h \
  ../include/cpu/interrupt.h ../include/asm/ioports.h ../include/stdio.h \
  ../include/stdarg.h ../include/errno.h
@@ -75,8 +76,10 @@ dev/ramdisk.o: dev/ramdisk.c ../include/foos/kmalloc.h ../include/inttypes.h \
  ../include/dev/ramdisk.h ../include/foos/device.h \
  ../include/foos/system.h ../include/assert.h ../include/string.h \
  ../include/stdio.h ../include/stdarg.h ../include/errno.h
+dev/serial.o: dev/serial.c ../include/asm/ioports.h ../include/inttypes.h \
+ ../include/foos/system.h ../include/dev/serial.h ../include/stdarg.h
 dev/tty.o: dev/tty.c ../include/dev/tty.h ../include/inttypes.h \
  ../include/foos/device.h ../include/foos/system.h \
- ../include/foos/kmalloc.h ../include/cpu/interrupt.h \
- ../include/asm/ioports.h ../include/string.h ../include/ctype.h \
- ../include/errno.h
+ ../include/dev/serial.h ../include/foos/kmalloc.h \
+ ../include/cpu/interrupt.h ../include/asm/ioports.h ../include/string.h \
+ ../include/ctype.h ../include/errno.h

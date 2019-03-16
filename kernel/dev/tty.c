@@ -1,4 +1,5 @@
 #include <dev/tty.h>
+#include <dev/serial.h>
 #include <foos/system.h>
 #include <foos/kmalloc.h>
 #include <foos/device.h>
@@ -211,9 +212,12 @@ static void kbd_irq(struct registers regs)
 		scancode&=0x7F;
 		switch(scancode){
 		case CTRL:
+			serial_print("[tty] ctrl released\n");
 			ptr->kbd.ctrl=0;
 			break;
 		case LSHIFT:case RSHIFT:
+			serial_print("[tty] shift released, switched to "
+					"`scancode_set'\n");
 			ptr->kbd.shift=0;
 			break;
 		case ALT:
@@ -226,13 +230,18 @@ static void kbd_irq(struct registers regs)
 			/* Suppose tab is not allowed */
 			break;
 		case CTRL:
+			serial_print("[tty] ctrl pressed\n");
 			ptr->kbd.ctrl=1;
 			break;
 		case LSHIFT:case RSHIFT:
+			serial_print("[tty] shift pressed, switched to "
+					"`shift_set'\n");
 			ptr->kbd.shift=1;
 			break;
 		case CAPS:
 			ptr->kbd.caps^=1;
+			serial_printf("[tty] capital lock %s\n",ptr->kbd.caps ?
+					"enabled":"disabled");
 			break;
 		case ALT:
 			ptr->kbd.alt=1;
@@ -288,7 +297,14 @@ size_t tty_read(struct tty *ptr,char *buf,size_t len)
 
 size_t ttydev_write(struct device *dev,const void *buf,size_t len)
 {
+	size_t serial_len=len;
 	struct tty *ptr=(struct tty*)dev->data;
+	serial_print("[tty] content: `");
+	/* Strip LF */
+	if(*(((const char*)buf)+len-1)=='\n')
+		serial_len--;
+	serial_write(buf,serial_len);
+	serial_print("' \r\n");
 	return tty_write(ptr,buf,len);
 }
 

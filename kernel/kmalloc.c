@@ -13,6 +13,7 @@
  */
 #include <foos/kmalloc.h>
 #include <foos/system.h>
+#include <dev/serial.h>
 #include <assert.h>
 #include <errno.h>
 #include <inttypes.h>
@@ -69,6 +70,8 @@ static struct block *lookup(struct block *blk,size_t size,size_t align)
 			*ptr = (struct block*)((char*)*ptr + ax - BLOCKSIZ);
 			blk->size=(char*)*ptr - blk->data;
 		}
+		serial_printf("[kmalloc] allocated new block at 0x%x\n",
+				(*ptr)->data);
 		(*ptr)->prev=blk;
 		(*ptr)->size=size;
 	}
@@ -119,6 +122,7 @@ void kfree(void *ptr)
 		merge(blk->prev);
 	}
 	merge(blk);
+	serial_printf("[kmalloc] %d bytes released\n",blk->size);
 }
 
 static void do_block(struct block *blk)

@@ -5,7 +5,7 @@ BOOTSEG=0x7C0
 INITSEG=0x9000
 SETUPSEG=0x9020
 SYSSEG=0x1000	# Load system at 1000:0000
-SYSSIZE=0x6000	# System size
+SYSSIZE=0x6400	# System size
 SYS_SECTORS=SYSSIZE>>9
 SETUP_SECTORS=1
 
@@ -76,10 +76,10 @@ load_system:
 load_system_new:
 	movw	$kernel_dap,%si
 	movb	$0x42,%ah
+	int	$0x13
 	jc	disk_error
 	cmp	$0x0,%ah
 	jne	disk_error
-	int	$0x13
 run_setup:
 	ljmp	$SETUPSEG,$0x0	# Let's go
 

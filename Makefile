@@ -42,7 +42,7 @@ bootdisk.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
 	cat $^ | dd status=noxfer conv=notrunc of=$@
 
 run:
-	$(QEMU) -d guest_errors -hda bootdisk.img -hdb ramdisk.img
+	$(QEMU) -d guest_errors -hda bootdisk.img -hdb ramdisk.img -serial stdio
 
 run-term:
 	$(QEMU) -d guest_errors -hda bootdisk.img -hdb ramdisk.img -curses

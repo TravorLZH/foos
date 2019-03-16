@@ -3,6 +3,7 @@
 #include <foos/kmalloc.h>
 #include <foos/device.h>
 #include <foos/ramfs.h>
+#include <dev/serial.h>
 #include <dev/tty.h>
 #include <dev/pic.h>
 #include <dev/pit.h>
@@ -48,6 +49,8 @@ int kernel_main(struct kernel_conf *conf)
 
 	/* Enable interrupts and IRQs (For keyboards and timer) */
 	int_enable();
+
+	serial_init();
 
 	/* Allocate the general-purpose kernel buffer */
 	buf=(char*)kmalloc(BUFSIZ);

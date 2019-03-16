@@ -18,8 +18,10 @@ it _wisely_.
 * Simple `malloc()` from scratch that is `free()`able
 * Virtual File System
 * RAM Drive
+* Serial Ports
 
-## Still Stuck
+## Currently wished to implement
+* Loading kernel with BIOS's extended read
 * Floppy Disk Controller
 * Loadable Kernel Module
 * Multitasking
