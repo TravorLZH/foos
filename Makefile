@@ -38,8 +38,8 @@ ramdisk2.img:
 	tar cvf $@ disk
 
 bootdisk.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
-	dd if=/dev/zero status=noxfer of=$@ count=1024
-	cat $^ | dd status=noxfer conv=notrunc of=$@
+	dd if=/dev/zero of=$@ count=1024
+	cat $^ | dd conv=notrunc of=$@
 
 run:
 	$(QEMU) -d guest_errors -hda bootdisk.img -hdb ramdisk.img -serial stdio
