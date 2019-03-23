@@ -114,16 +114,16 @@ kernel_dap:
 
 # Strings
 should_boot_from_hda:
-	.ascii	"You should boot this from 1st hard disk"
+	.ascii	"[boot error] should be booted from 1st hard disk"
 	.byte	0x0D,0x0A,0x0
 disk_read_failed:
 	.ascii	"Disk reading failed with code "
 	.byte	0x0
 loading_setup:
-	.ascii	"Loading setup..."
+	.ascii	"[boot] loading `setup'..."
 	.byte	0x0D,0x0A,0x0
 loading_system:
-	.ascii	"Loading system..."
+	.ascii	"[boot] loading `system'..."
 	.byte	0x0D,0x0A,0x0
 .space	510-(.-boot)
 .word	0xAA55

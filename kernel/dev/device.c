@@ -1,5 +1,6 @@
 #include <foos/device.h>
 #include <dev/tty.h>
+#include <dev/serial.h>
 #include <dev/ramdisk.h>
 #include <foos/system.h>
 #include <errno.h>
@@ -66,10 +67,10 @@ int dev_close(int no)
 	struct device *ptr=devs+no;
 	ptr->offset=0;
 	if(ptr->close!=NULL){
-		printf("dev: Closing `%s'\n",ptr->name);
+		serial_printf("[dev] Closing `%s'\n",ptr->name);
 		return ptr->close(ptr);
 	}
-	printf("dev: warning: `%s' is not closable\n",ptr->name);
+	serial_printf("[dev] warning: `%s' is not closable\n",ptr->name);
 	errno=ENOSYS;
 	return -ENOSYS;
 }

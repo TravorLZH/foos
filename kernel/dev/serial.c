@@ -2,6 +2,10 @@
 #include <foos/system.h>
 #include <dev/serial.h>
 #include <stdarg.h>
+#include <stdio.h>
+#include <assert.h>
+
+static char serial_enabled=0;
 
 void serial_init(void)
 {
@@ -9,11 +13,15 @@ void serial_init(void)
 	outb(SERIAL_LINE,0x03);	// 8 (5+3) bits, 1 stop bit, no parity bit
 	/* I do not understand what this does */
 	outb(SERIAL_FIFO,0xC7);	// Enable FIFO
-	serial_print("[serial] enabled!\r\n");
+	serial_enabled=1;
+	assert(serial_enabled != 0);
+	serial_print("[serial] enabled!\n");
 }
 
 char serial_read(void)
 {
+	if(serial_enabled==0)
+		return 0;
 	while((inb(SERIAL_LINESTAT) & 0x1)==0);
 	char c=inb(SERIAL_DATA);
 	serial_send(c);
@@ -52,6 +60,10 @@ int serial_printf(const char *fmt,...)
 
 void serial_send(char c)
 {
+	if(serial_enabled==0)
+		return;
+	if(c=='\n')
+		serial_send('\r');
 	while((inb(SERIAL_LINESTAT) & 0x20)==0);
 	outb(SERIAL_DATA,c);
 }

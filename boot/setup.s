@@ -110,13 +110,13 @@ gdt_descriptor:
 	.long	gdt_start+PMBASE
 # Strings
 load_rd:
-	.ascii	"Loading ramdisk..."
+	.ascii	"[setup] loading `ramdisk'..."
 	.byte	0x0
 no_rd:
-	.ascii	"[Not Available]"
+	.ascii	"n/a"
 	.byte	0x0D,0x0A,0x0
 move_sys:
-	.ascii	"Moving kernel..."
+	.ascii	"[setup] moving `system' from 1000:0000 to 0000:0000..."
 	.byte	0x0D,0x0A,0x0
 newline:
 	.byte	0x0D,0x0A,0x0

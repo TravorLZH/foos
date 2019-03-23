@@ -34,13 +34,17 @@ int kernel_main(struct kernel_conf *conf)
 	int i=0;
 	struct inode *tmp=NULL;
 	size_t rd_size;
+
+	/* Serial logging */
+	serial_init();
+
 	/* Interrupts */
 	int_init();
 
 	/* Make sure we can put stuff on the screen */
 	dev_open(DEV_TTY,0);
 
-	/* Paging and Frames */
+	/* Paging and frames */
 	pmem_init(NULL);
 	vmem_init(NULL);
 
@@ -50,19 +54,18 @@ int kernel_main(struct kernel_conf *conf)
 	/* Enable interrupts and IRQs (For keyboards and timer) */
 	int_enable();
 
-	serial_init();
-
 	/* Allocate the general-purpose kernel buffer */
 	buf=(char*)kmalloc(BUFSIZ);
 
 	if(!(conf->flags & KF_RAMDISK)){
-		puts("ramdisk: Not available");
+		puts("[ramdisk] Not available");
 		hang();
 	}
 
 	/* Initialize ramdisk if available */
 	rd_size=conf->rd_end - conf->rd_start;
-	printf("ramdisk: size=%uKB, start=0x%x\n",rd_size/1024,conf->rd_start);
+	serial_printf("[ramdisk] size=%uKB, start=0x%x\n",rd_size/1024,
+			conf->rd_start);
 	dev_open(DEV_RAMDISK,0);
 	dev_ioctl(DEV_RAMDISK,RD_SETADDR,&conf->rd_start);
 	dev_ioctl(DEV_RAMDISK,RD_SETSIZE,&rd_size);
@@ -89,7 +92,7 @@ int kernel_main(struct kernel_conf *conf)
 	shell_main();
 
 	/* De-initialize FOOS devices */
-	puts("kernel: Start halting system");
+	puts("[kernel] Start halting system");
 	dev_close(DEV_RAMDISK);
 	dev_close(DEV_TTY);
 	pic_disable();

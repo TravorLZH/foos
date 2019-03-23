@@ -297,14 +297,16 @@ size_t tty_read(struct tty *ptr,char *buf,size_t len)
 
 size_t ttydev_write(struct device *dev,const void *buf,size_t len)
 {
-	size_t serial_len=len;
 	struct tty *ptr=(struct tty*)dev->data;
+#if	0
+	size_t serial_len=len;
 	serial_print("[tty] content: `");
 	/* Strip LF */
 	if(*(((const char*)buf)+len-1)=='\n')
 		serial_len--;
 	serial_write(buf,serial_len);
 	serial_print("' \r\n");
+#endif
 	return tty_write(ptr,buf,len);
 }
 

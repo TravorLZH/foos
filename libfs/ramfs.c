@@ -4,6 +4,7 @@
 #include <foos/device.h>
 #include <foos/ramfs.h>
 #include <dev/ramdisk.h>
+#include <dev/serial.h>
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -23,13 +24,13 @@ struct inode *ramfs_init(void)
 	assert(!dev_ioctl(DEV_RAMDISK,RD_GETADDR,&header));
 	files=(struct rd_fileheader*)(header+1);
 	if(header->signature!=RD_HEADSIG){
-		puts("ramfs: Bad signature");
+		puts("ramfs: bad signature");
 		return NULL;
 	}
 	file_base=rd_nfiles=header->nfiles;
 	file_base*=sizeof(struct rd_fileheader);
 	file_base+=sizeof(struct rd_header);
-	puts("ramfs: Creating inode for `/'");
+	serial_print("[ramfs] creating inode for `/'\n");
 	rd_root=(struct inode*)kmalloc(sizeof(struct inode));
 	memset(rd_root,0,sizeof(struct inode));
 	strcpy(rd_root->name,"ramdisk");
@@ -41,7 +42,8 @@ struct inode *ramfs_init(void)
 	memset(rd_files,0,(header->nfiles+1) * sizeof(struct inode));
 	for(i=0;i<rd_nfiles;i++){
 		assert(files[i].magic==RD_FILESIG);
-		printf("ramfs: Creating inode for `%s'\n",files[i].name);
+		serial_printf("[ramfs] creating inode for `%s'\n",
+				files[i].name);
 		strcpy(rd_files[i].name,files[i].name);
 		rd_files[i].flags=FS_FILE;
 		rd_files[i].ino=i;

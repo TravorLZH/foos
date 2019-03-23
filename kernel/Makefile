@@ -62,8 +62,9 @@ vmem.o: vmem.c ../include/cpu/memory.h ../include/inttypes.h \
  ../include/foos/kmalloc.h ../include/stdio.h ../include/stdarg.h \
  ../include/string.h
 dev/device.o: dev/device.c ../include/foos/device.h ../include/foos/system.h \
- ../include/inttypes.h ../include/dev/tty.h ../include/dev/ramdisk.h \
- ../include/errno.h ../include/stdio.h ../include/stdarg.h
+ ../include/inttypes.h ../include/dev/tty.h ../include/dev/serial.h \
+ ../include/dev/ramdisk.h ../include/errno.h ../include/stdio.h \
+ ../include/stdarg.h
 dev/floppy.o: dev/floppy.c ../include/dev/dma.h ../include/dev/floppy.h \
  ../include/inttypes.h ../include/asm/ioports.h \
  ../include/cpu/interrupt.h ../include/stdio.h ../include/stdarg.h
@@ -77,7 +78,8 @@ dev/ramdisk.o: dev/ramdisk.c ../include/foos/kmalloc.h ../include/inttypes.h \
  ../include/foos/system.h ../include/assert.h ../include/string.h \
  ../include/stdio.h ../include/stdarg.h ../include/errno.h
 dev/serial.o: dev/serial.c ../include/asm/ioports.h ../include/inttypes.h \
- ../include/foos/system.h ../include/dev/serial.h ../include/stdarg.h
+ ../include/foos/system.h ../include/dev/serial.h ../include/stdarg.h \
+ ../include/stdio.h ../include/assert.h
 dev/tty.o: dev/tty.c ../include/dev/tty.h ../include/inttypes.h \
  ../include/foos/device.h ../include/foos/system.h \
  ../include/dev/serial.h ../include/foos/kmalloc.h \

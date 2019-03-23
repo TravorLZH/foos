@@ -40,8 +40,9 @@ devfs.o: devfs.c ../include/foos/system.h ../include/inttypes.h \
 ramfs.o: ramfs.c ../include/foos/fs.h ../include/inttypes.h \
  ../include/foos/devfs.h ../include/foos/kmalloc.h \
  ../include/foos/device.h ../include/foos/system.h \
- ../include/foos/ramfs.h ../include/dev/ramdisk.h ../include/assert.h \
- ../include/stdio.h ../include/stdarg.h ../include/string.h
+ ../include/foos/ramfs.h ../include/dev/ramdisk.h ../include/dev/serial.h \
+ ../include/assert.h ../include/stdio.h ../include/stdarg.h \
+ ../include/string.h
 wrap.o: wrap.c ../include/foos/system.h ../include/inttypes.h \
  ../include/foos/fs.h ../include/foos/device.h ../include/foos/kmalloc.h \
  ../include/errno.h ../include/string.h ../include/assert.h \
