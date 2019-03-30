@@ -2,6 +2,7 @@
 #include <cpu/interrupt.h>
 #include <foos/system.h>
 #include <foos/kmalloc.h>
+#include <foos/debug.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -25,6 +26,7 @@ static void page_fault(struct registers regs)
 	if(user){
 		printf("By the way, you accessed a kernel page\n");
 	}
+	do_stack_trace();
 	hang();
 }
 
