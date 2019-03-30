@@ -139,6 +139,12 @@ static void test_malloc(void)
 	kfree(a);
 }
 
+static void trigger_pf(void)
+{
+	char *a=(char*)0xFFFFFFFF;
+	*a=0;
+}
+
 static void shell_help(void);
 
 struct cmd_handler {
@@ -158,6 +164,7 @@ struct cmd_handler handlers[]={
 	{"tty","write `Hello world' to /dev/tty",test_fsdev},
 	{"tok","test tokenizing strings",test_strtok},
 	{"malloc","test the efficiency of malloc()",test_malloc},
+	{"fault","trigger a page fault",trigger_pf},
 	{"exit","quit the shell",NULL}
 };
 

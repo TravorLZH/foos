@@ -29,6 +29,7 @@ enable_a20_fast:
 a20_ok:
 	movl	$0x400000,%esp	# 3MB Stack (0x100000 - 0x400000)
 	pushl	$0x80000
+	xorl	%ebp,%ebp	# Used for stack tracing
 	call	kernel_main
 	addl	$0x4,%esp
 	jmp	.

@@ -40,6 +40,8 @@ clean-dep:
 	$(RM) -f Makefile_temp
 ### Dependencies
 assert.o: assert.c ../include/assert.h
+debug.o: debug.c ../include/dev/serial.h ../include/inttypes.h \
+ ../include/foos/debug.h
 interrupt.o: interrupt.c ../include/foos/system.h ../include/inttypes.h \
  ../include/foos/kmalloc.h ../include/cpu/interrupt.h \
  ../include/dev/pic.h ../include/string.h ../include/stdlib.h \
@@ -62,8 +64,8 @@ shell.o: shell.c ../include/foos/fs.h ../include/inttypes.h \
  ../include/assert.h
 vmem.o: vmem.c ../include/cpu/memory.h ../include/inttypes.h \
  ../include/cpu/interrupt.h ../include/foos/system.h \
- ../include/foos/kmalloc.h ../include/stdio.h ../include/stdarg.h \
- ../include/string.h
+ ../include/foos/kmalloc.h ../include/foos/debug.h ../include/stdio.h \
+ ../include/stdarg.h ../include/string.h
 dev/device.o: dev/device.c ../include/foos/device.h ../include/foos/system.h \
  ../include/inttypes.h ../include/dev/tty.h ../include/dev/serial.h \
  ../include/dev/ramdisk.h ../include/errno.h ../include/stdio.h \
