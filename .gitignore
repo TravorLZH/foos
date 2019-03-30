@@ -4,4 +4,6 @@
 *.a
 *.exe
 *.elf
+kernel/foos.map
 tools/mkdisk
+tools/tartest

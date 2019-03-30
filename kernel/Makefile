@@ -5,7 +5,7 @@ CPPFLAGS=-I../include
 CFLAGS=-ffreestanding
 CFLAGS+=-Wno-packed-bitfield-compat
 CFLAGS+=$(CPPFLAGS)
-LDFLAGS+=-melf_i386 --oformat=binary -L../lib
+LDFLAGS+=-melf_i386 --oformat=binary -L../lib -x -M
 LIBS=-lc -lfs
 .PHONY:	all clean dep clean-dep kernel.bin
 
@@ -18,7 +18,9 @@ all:	kernel.bin
 	$(CC) -m32 -c -o $@ $< $(CFLAGS)
 
 kernel.bin:	entry.o $(OBJ)
-	$(LD) $(LDFLAGS) -Tlink.ld -o $@ $^ $(LIBS)
+	$(LD) $(LDFLAGS) -Tlink.ld -o $@ $^ $(LIBS) \
+		| (grep -E '^\s+0x\S{8}\s+\S+$$' \
+		| (sed -r 's/^\s+0x(\S{8})\s+(\S+)/\1 \2/g' > foos.map))
 
 clean:
 	$(RM) -rf *.o *.bin
@@ -68,6 +70,8 @@ dev/device.o: dev/device.c ../include/foos/device.h ../include/foos/system.h \
 dev/floppy.o: dev/floppy.c ../include/dev/dma.h ../include/dev/floppy.h \
  ../include/inttypes.h ../include/asm/ioports.h \
  ../include/cpu/interrupt.h ../include/stdio.h ../include/stdarg.h
+dev/pci.o: dev/pci.c ../include/dev/pci.h ../include/inttypes.h \
+ ../include/asm/ioports.h
 dev/pic.o: dev/pic.c ../include/asm/ioports.h ../include/inttypes.h \
  ../include/dev/serial.h ../include/dev/pic.h
 dev/pit.o: dev/pit.c ../include/dev/pit.h ../include/inttypes.h \
