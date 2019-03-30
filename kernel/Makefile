@@ -19,8 +19,9 @@ all:	kernel.bin
 
 kernel.bin:	entry.o $(OBJ)
 	$(LD) $(LDFLAGS) -Tlink.ld -o $@ $^ $(LIBS) \
-		| (grep -E '^\s+0x\S{8}\s+\S+$$' \
-		| (sed -r 's/^\s+0x(\S{8})\s+(\S+)/\1 \2/g' > foos.map))
+		| (grep -E '^\s+0x\S{8,16}\s+\S+$$' \
+		| (sed -E 's/^\s+0x\S{0,8}(\S{8})\s+(\S+)$$/\1 \2/g' \
+		> foos.map))
 
 clean:
 	$(RM) -rf *.o *.bin

@@ -46,6 +46,9 @@ $ make
 You can also type `make run` to play the OS if you have `qemu-system-i386`
 installed.
 
+> Due to the convenience, the GNU's command line tools are preferred over BSD's,
+> so make sure [`sed`][sed] in the host system is a GNU software.
+
 ## Images
 Harddisk images are supported:
 * *bootdisk.img:* 1st hard disk channel (DAP is used to load _system_)
@@ -107,5 +110,6 @@ I am not going to explain this, but you can find more information in
 [appveyor]: https://ci.appveyor.com/api/projects/status/github/TravorLZH/foos?svg=true
 [tag]: https://img.shields.io/github/tag/TravorLZH/foos.svg
 [license]: https://img.shields.io/github/license/TravorLZH/foos.svg
+[sed]: https://www.gnu.org/software/sed
 [1]: include/foos/ramfs.h
 [2]: https://en.wikipedia.org/wiki/Tar_(computing)
