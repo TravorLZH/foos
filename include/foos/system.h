@@ -17,9 +17,11 @@
 #define	SEEK_END	2
 
 #define	KF_RAMDISK	0x01
+#define	KF_RSDP		0x02
 
 struct kernel_conf {
-	uint32_t flags;
+	uint16_t flags;
+	uint16_t rsdp_seg;
 	void* rd_start;
 	void* rd_end;
 } __attribute__((packed));

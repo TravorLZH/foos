@@ -10,6 +10,7 @@
 #include <dev/ramdisk.h>
 #include <cpu/interrupt.h>
 #include <cpu/memory.h>
+#include <cpu/acpi.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -58,8 +59,13 @@ int kernel_main(struct kernel_conf *conf)
 	buf=(char*)kmalloc(BUFSIZ);
 
 	if(!(conf->flags & KF_RAMDISK)){
-		puts("[ramdisk] Not available");
+		puts("[ramdisk] not available");
 		hang();
+	}
+
+	/* Initialize ACPI */
+	if(conf->flags & KF_RSDP){
+		acpi_init((struct acpi_rsdp*)(conf->rsdp_seg << 4));
 	}
 
 	/* Initialize ramdisk if available */
@@ -92,7 +98,7 @@ int kernel_main(struct kernel_conf *conf)
 	shell_main();
 
 	/* De-initialize FOOS devices */
-	puts("[kernel] Start halting system");
+	puts("[kernel] start halting system");
 	dev_close(DEV_RAMDISK);
 	dev_close(DEV_TTY);
 	pic_disable();
