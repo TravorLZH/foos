@@ -6,6 +6,7 @@ CC=i386-elf-gcc
 AR=i386-elf-ar
 RM=rm
 QEMU=qemu-system-i386
+QEMUFLAGS=-d guest_errors -m 16M
 LDFLAGS=-melf_i386 --oformat=binary -Ttext=0
 DEST=$(CURDIR)
 
@@ -16,8 +17,8 @@ DEST=$(CURDIR)
 all:	all-subdirs ramdisk.img ramdisk2.img bootdisk.img
 
 all-subdirs:	all-libs install-libs
-	$(MAKE) -C kernel CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
 	$(MAKE) -C tools
+	$(MAKE) -C kernel CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
 
 all-libs:
 	$(MAKE) -C libc CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
@@ -42,10 +43,10 @@ bootdisk.img:	boot/bootsect.bin boot/setup.bin kernel/kernel.bin
 	cat $^ | dd conv=notrunc of=$@
 
 run:
-	$(QEMU) -d guest_errors -hda bootdisk.img -hdb ramdisk.img -serial stdio
+	$(QEMU) $(QEMUFLAGS) -hda bootdisk.img -hdb ramdisk.img -serial stdio
 
 run-term:
-	$(QEMU) -d guest_errors -hda bootdisk.img -hdb ramdisk.img -curses
+	$(QEMU) $(QEMUFLAGS) -hda bootdisk.img -hdb ramdisk.img -curses
 
 clean:
 	$(RM) -rf lib/

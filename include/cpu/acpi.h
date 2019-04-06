@@ -1,7 +1,7 @@
 #ifndef	ACPI_H
 #define	ACPI_H
 
-#include <inttypes.h>
+#include <foos/system.h>
 
 /* System Description Table Header */
 struct acpi_sdt_header {

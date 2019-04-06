@@ -1,4 +1,5 @@
 #include <cpu/acpi.h>
+#include <cpu/memory.h>
 #include <dev/serial.h>
 
 static int checksum_valid(void *ptr,size_t size)
@@ -30,7 +31,15 @@ int acpi_init(struct acpi_rsdp *rsdp)
 	serial_print("'\n");
 	serial_printf("[acpi] ACPI version: %s\n",rsdp->revision==2?
 			"2.0" : "1.0");
-	serial_printf("[acpi] RSDT address: 0x%x\n",rsdp->rsdt);
 	serial_print("[acpi] ******************************\n");
+	if(!checksum_valid(rsdp->rsdt,rsdp->rsdt->header.len)){
+		serial_print("[acpi] invalid RSDT! stop initializing acpi\n");
+		return 1;
+	}
+	serial_printf("[acpi] RSDT at 0x%x is valid\n",rsdp->rsdt);
+	serial_print("[acpi] RSDT signature: `");
+	for(i=0;i<sizeof(rsdp->rsdt->header.oem);i++)
+		serial_send(rsdp->rsdt->header.oem[i]);
+	serial_print("'\n");
 	return 0;
 }

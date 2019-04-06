@@ -1,5 +1,6 @@
 #include <cpu/memory.h>
 #include <cpu/interrupt.h>
+#include <dev/serial.h>
 #include <foos/system.h>
 #include <foos/kmalloc.h>
 #include <foos/debug.h>
@@ -38,6 +39,7 @@ int vmem_init(void *reserved)
 		__asm__("movl %%eax,%%cr3"::"a"(tables));
 	}
 	size_t i;
+	/* 16M is mapped */
 	for(i=0;i<4096;i++){
 		void *addr=(void*)(i*PAGE_SIZE);
 		pmem_mapaddr(addr,NULL,P_WRITABLE,tables);
@@ -58,6 +60,7 @@ uint32_t *vmem_get(void *addr,void *dirptr)
 	size_t offset=tmp%1024;
 	uint32_t *table=(uint32_t*)(dir[table_i] & (0xFFFFFFFF << PAGE_ALIGN));
 	if(!(dir[table_i] & P_PRESENT) || table==NULL){
+		serial_printf("[mem] creating table for 0x%x\n",table);
 		table=(uint32_t*)kmalloca(TABLE_SIZE,PAGE_ALIGN);
 		dir[table_i]=(size_t)table | P_PRESENT | P_WRITABLE;
 	}

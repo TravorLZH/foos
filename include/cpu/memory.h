@@ -1,6 +1,6 @@
 #ifndef	MEMORY_H
 #define	MEMORY_H
-#include <inttypes.h>
+#include <foos/system.h>
 
 #define	MAPPED_MEMORY	0x1000000
 #define	PAGE_SIZE	0x1000
