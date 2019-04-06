@@ -14,9 +14,6 @@
 
 extern int vmem_init(void *reserved);
 extern uint32_t *vmem_get(void *addr,void *dir);
-/* Used by 3rd party memory allocator */
-extern void *vmem_alloc(size_t pages);
-extern void vmem_free(void *addr,size_t pages);
 
 extern int pmem_init(void *reserved);
 extern void pmem_set(void *addr);

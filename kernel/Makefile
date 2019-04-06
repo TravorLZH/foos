@@ -9,7 +9,7 @@ LDFLAGS+=-melf_i386 --oformat=binary -L../lib -x -M
 LIBS=-lc -lfs
 .PHONY:	all clean dep clean-dep kernel.bin
 
-all:	kernel.bin
+all:	kernel.bin foos.sym
 
 %.o:	%.s
 	$(AS) --32 -o $@ $<
@@ -22,6 +22,9 @@ kernel.bin:	entry.o $(OBJ)
 		| (grep -E '^\s+0x\S{8,16}\s+\S+$$' \
 		| (sed -E 's/^\s+0x\S{0,8}(\S{8})\s+(\S+)$$/\1 \2/g' \
 		> foos.map))
+
+foos.sym:	kernel.bin
+	../tools/symtable foos.map ../foos.sym
 
 clean:
 	$(RM) -rf *.o *.bin
@@ -39,6 +42,8 @@ clean-dep:
 	cp Makefile_temp Makefile
 	$(RM) -f Makefile_temp
 ### Dependencies
+acpi.o: acpi.c ../include/cpu/acpi.h ../include/inttypes.h \
+ ../include/dev/serial.h
 assert.o: assert.c ../include/assert.h
 debug.o: debug.c ../include/dev/serial.h ../include/inttypes.h \
  ../include/foos/debug.h
@@ -54,8 +59,8 @@ main.o: main.c ../include/foos/system.h ../include/inttypes.h \
  ../include/foos/ramfs.h ../include/foos/fs.h ../include/dev/serial.h \
  ../include/dev/tty.h ../include/dev/pic.h ../include/dev/pit.h \
  ../include/dev/ramdisk.h ../include/cpu/interrupt.h \
- ../include/cpu/memory.h ../include/stdio.h ../include/stdarg.h \
- ../include/stdlib.h ../include/string.h
+ ../include/cpu/memory.h ../include/cpu/acpi.h ../include/stdio.h \
+ ../include/stdarg.h ../include/stdlib.h ../include/string.h
 pmem.o: pmem.c ../include/cpu/memory.h ../include/inttypes.h \
  ../include/foos/system.h ../include/foos/kmalloc.h
 shell.o: shell.c ../include/foos/fs.h ../include/inttypes.h \
