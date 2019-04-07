@@ -42,8 +42,10 @@ clean-dep:
 	cp Makefile_temp Makefile
 	$(RM) -f Makefile_temp
 ### Dependencies
-acpi.o: acpi.c ../include/cpu/acpi.h ../include/foos/system.h \
- ../include/inttypes.h ../include/cpu/memory.h ../include/dev/serial.h
+acpi.o: acpi.c ../include/asm/ioports.h ../include/inttypes.h \
+ ../include/cpu/acpi.h ../include/foos/system.h ../include/cpu/memory.h \
+ ../include/dev/serial.h ../include/dev/pit.h ../include/stdio.h \
+ ../include/stdarg.h ../include/string.h
 assert.o: assert.c ../include/assert.h
 debug.o: debug.c ../include/dev/serial.h ../include/inttypes.h \
  ../include/foos/debug.h

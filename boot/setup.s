@@ -47,9 +47,10 @@ lookup_rsdp:
 # If not found in the, find in the first 1024 bytes from EBDA
 lookup_rsdp2:
 	pushw	%ds
-	movw	$0x40E,%ax
+	movw	$0x40,%ax
 	movw	%ax,%ds
-	movw	%ds:0x0,%ax
+	movw	%ds:0x0E,%ax
+	shlw	$4,%ax
 	popw	%ds
 	movw	%ax,%dx
 	addw	$0x400,%dx

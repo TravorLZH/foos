@@ -16,7 +16,7 @@
 #define	outw(port,val) \
 	__asm__("outw %0,%1"::"a"((uint16_t)(val)),"Nd"((uint16_t)(port)));
 
-#define	inbw(port) ({ \
+#define	inw(port) ({ \
 		uint16_t ret; \
 		__asm__("inw %1,%0":"=a"(ret):"Nd"((uint16_t)(port))); \
 		ret; \
