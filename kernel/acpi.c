@@ -21,7 +21,13 @@ static struct acpi_sdt_header *find_fadt(struct acpi_rsdt *rsdt)
 	int i;
 	int n_sdt=rsdt->header.len - sizeof(struct acpi_sdt_header);
 	n_sdt /= sizeof(void*);
-	serial_printf("[acpi] There are %d entries in the RSDT\n",n_sdt);
+	serial_printf("[acpi] Available SDT:\n",n_sdt);
+	for(i=0;i<n_sdt;i++){
+		serial_print("[acpi]\t");
+		serial_write(rsdt->sdt[i]->signature,
+				sizeof(rsdt->sdt[i]->signature));
+		serial_send('\n');
+	}
 	for(i=0;i<n_sdt;i++){
 		if(!memcmp("FACP",rsdt->sdt[i]->signature,
 					sizeof(rsdt->sdt[i]->signature)))
