@@ -27,6 +27,7 @@ foos.sym:	kernel.bin
 	../tools/symtable foos.map ../foos.sym
 
 clean:
+	$(RM) -rf foos.map ../foos.sym
 	$(RM) -rf *.o *.bin
 	$(RM) -rf dev/*.o
 
