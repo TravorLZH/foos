@@ -1,6 +1,6 @@
 C_SOURCES=$(wildcard *.c dev/*.c)
-AS_SOURCES=$(filter-out entry.s,$(wildcard *.s dev/*.s))
-OBJ=$(C_SOURCES:.c=.o) $(AS_SOURCES:.s=.o)
+AS_SOURCES=$(filter-out entry.S,$(wildcard *.S dev/*.S))
+OBJ=$(C_SOURCES:.c=.o) $(AS_SOURCES:.S=.o)
 CPPFLAGS=-I../include
 CFLAGS=-ffreestanding
 CFLAGS+=-Wno-packed-bitfield-compat
@@ -11,7 +11,7 @@ LIBS=-lc -lfs
 
 all:	kernel.bin foos.sym
 
-%.o:	%.s
+%.o:	%.S
 	$(AS) --32 -o $@ $<
 
 %.o:	%.c
