@@ -3,6 +3,7 @@
 AS=i386-elf-as
 LD=i386-elf-ld
 CC=i386-elf-gcc
+CPP=i386-elf-cpp
 AR=i386-elf-ar
 RM=rm
 QEMU=qemu-system-i386
@@ -58,9 +59,9 @@ clean:
 	$(MAKE) -C tools $@
 
 dep:
-	$(MAKE) -C kernel $@ RM=$(RM)
-	$(MAKE) -C libc $@ RM=$(RM)
-	$(MAKE) -C libfs $@ RM=$(RM)
+	$(MAKE) -C kernel $@ RM=$(RM) CPP=$(CPP)
+	$(MAKE) -C libc $@ RM=$(RM) CPP=$(CPP)
+	$(MAKE) -C libfs $@ RM=$(RM) CPP=$(CPP)
 
 clean-dep:
 	$(MAKE) -C kernel $@ RM=$(RM)

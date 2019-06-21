@@ -34,7 +34,8 @@ clean:
 dep:
 	sed '/\#\#\# Dependencies/q' < Makefile > Makefile_temp
 	(for i in *.c;do $(CPP) $(CPPFLAGS) -M $$i;done) >> Makefile_temp
-	(for i in dev/*.c;do echo -n dev/;$(CPP) $(CPPFLAGS) -M $$i;done) >> Makefile_temp
+	(for i in dev/*.c;do /bin/echo -n dev/;$(CPP) $(CPPFLAGS) -M $$i;done) \
+		>> Makefile_temp	# Must use /bin/echo or bugs will occur
 	cp Makefile_temp Makefile
 	$(RM) -f Makefile_temp
 
