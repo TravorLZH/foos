@@ -1,10 +1,13 @@
 # Makefile of FOOS kernel
 
-AS=i386-elf-as
-LD=i386-elf-ld
-CC=i386-elf-gcc
-CPP=i386-elf-cpp
-AR=i386-elf-ar
+AS=i686-elf-as
+LD=i686-elf-ld
+CC=i686-elf-gcc
+CFLAGS=-std=c99 -ffreestanding
+CPP=i686-elf-cpp
+CPPFLAGS=-I$(CURDIR)/include
+CFLAGS+=$(CPPFLAGS)
+AR=i686-elf-ar
 RM=rm
 QEMU=qemu-system-i386
 QEMUFLAGS=-d guest_errors -m 16M
@@ -19,11 +22,11 @@ all:	all-subdirs ramdisk.img ramdisk2.img bootdisk.img
 
 all-subdirs:	all-libs install-libs
 	$(MAKE) -C tools
-	$(MAKE) -C kernel CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
+	$(MAKE) -C kernel CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR) CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)"
 
 all-libs:
-	$(MAKE) -C libc CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
-	$(MAKE) -C libfs CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR)
+	$(MAKE) -C libc CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR) CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)"
+	$(MAKE) -C libfs CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR) CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)"
 
 install-libs:
 	$(MAKE) -C libc install DEST=$(DEST)
@@ -59,9 +62,9 @@ clean:
 	$(MAKE) -C tools $@
 
 dep:
-	$(MAKE) -C kernel $@ RM=$(RM) CPP=$(CPP)
-	$(MAKE) -C libc $@ RM=$(RM) CPP=$(CPP)
-	$(MAKE) -C libfs $@ RM=$(RM) CPP=$(CPP)
+	$(MAKE) -C kernel $@ RM=$(RM) CPP=$(CPP) CPPFLAGS="$(CPPFLAGS)"
+	$(MAKE) -C libc $@ RM=$(RM) CPP=$(CPP) CPPFLAGS="$(CPPFLAGS)"
+	$(MAKE) -C libfs $@ RM=$(RM) CPP=$(CPP) CPPFLAGS="$(CPPFLAGS)"
 
 clean-dep:
 	$(MAKE) -C kernel $@ RM=$(RM)
