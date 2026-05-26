@@ -6,8 +6,13 @@
 extern char *strrev(char *str);
 extern char *strcpy(char *to,const char *from);
 extern int strcmp(const char *s1,const char *s2);
+extern int strncmp(const char *s1,const char *s2,size_t num);
+extern char *strstr(const char *haystack, const char *needle);
+extern char *strnstr(const char *haystack, const char *needle, size_t len);
 extern char *strtok(char *s,const char *delim);
 extern size_t strspn(const char *str,const char *accept);
+extern void *memmem(const void *haystack,size_t haystack_len,
+	const void *needle,size_t needle_len);
 
 static inline int strlen(const char *s)
 {
