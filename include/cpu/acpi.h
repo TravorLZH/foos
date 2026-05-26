@@ -72,5 +72,6 @@ struct acpi_fadt {
 } __attribute__((packed));
 
 extern int acpi_init(struct acpi_rsdp *rsdp_addr);
+extern int acpi_shutdown(void);
 
 #endif

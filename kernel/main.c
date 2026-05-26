@@ -100,7 +100,9 @@ int kernel_main(struct kernel_conf *conf)
 	/* De-initialize FOOS devices */
 	puts("[kernel] start halting system");
 	dev_close(DEV_RAMDISK);
-	dev_close(DEV_TTY);
 	pic_disable();
+	/* We do not close TTY because acpi_shutdown() still needs it */
+	if(acpi_shutdown())
+		puts("Failed to shutdown");
 	return 0;
 }
