@@ -1,6 +1,7 @@
 #include <cpu/memory.h>
 #include <foos/system.h>
 #include <foos/kmalloc.h>
+#include <string.h>
 
 #define	FRAMES_SIZE	(NPAGES/sizeof(uint32_t))
 
@@ -30,6 +31,7 @@ int pmem_test(void *addr)
 int pmem_init(void *reserved)
 {
 	frame_set=(uint32_t*)kmalloc(PAGE_SIZE);
+	memset(frame_set,0,PAGE_SIZE);
 }
 
 int pmem_map(uint32_t *pg,void *physaddr,uint32_t flags)

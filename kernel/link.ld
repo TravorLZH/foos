@@ -16,7 +16,13 @@ SECTIONS
 	}
 	.bss	:
 	{
+		. = ALIGN(0x200);	/* To allow faster zeroing instructions */
+		__bss_start = .;
+		*(COMMON)
 		*(.bss)
+		*(.bss.*)
+
 		. = ALIGN(0x200);
+		__bss_end = .;
 	}
 }
