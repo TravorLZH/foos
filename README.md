@@ -6,22 +6,23 @@
 FOOS still remains as a **hobbyist research purpose** operating system, so use
 it _wisely_.
 
-## Currently implemented
+## Available features
 
 * Bootloader
 * 32-bit C kernel
 * Interrupts and Interrupt Requests
 * Programmable Interval Timer
-* Teletype Device (Both printing and keyboard
+* Teletype Device (Both printing and keyboard)
 * Memory Management (Paging and Page Frame Allocator)
 * Hardware Abstraction Layer (`dev_write()`, `dev_read()`, etc.)
 * Simple `malloc()` from scratch that is `free()`able
 * Virtual File System
 * RAM Drive
 * Serial Ports
+* ACPI Shutdown
 
-## Currently wished to implement
-* Loading kernel with BIOS's extended read
+## Features to be implemented
+* Stack Trace
 * Floppy Disk Controller
 * Loadable Kernel Module
 * Multitasking
@@ -46,8 +47,8 @@ $ make
 You can also type `make run` to play the OS if you have `qemu-system-i386`
 installed.
 
-> Due to the convenience, the GNU's command line tools are preferred over BSD's,
-> so make sure [`sed`][sed] in the host system is a GNU software.
+> Due to convenience, the GNU's command line tools are preferred over BSD's, so
+> make sure [`sed`][sed] in the host system is a GNU software.
 
 ## Images
 Harddisk images are supported:
