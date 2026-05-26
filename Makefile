@@ -14,14 +14,18 @@ QEMUFLAGS=-d guest_errors -m 16M
 LDFLAGS=-melf_i386 --oformat=binary -Ttext=0
 DEST=$(CURDIR)
 
-.PHONY:	all all-subdirs install-libs clean dep clean-dep ramdisk.img \
+.PHONY:	all tools all-subdirs install-libs clean dep clean-dep ramdisk.img \
 	ramdisk2.img
 .IGNORE: run
 
-all:	all-subdirs ramdisk.img ramdisk2.img bootdisk.img
+all:	tools all-subdirs ramdisk.img ramdisk2.img bootdisk.img
 
-all-subdirs:	all-libs install-libs
+tools:
 	$(MAKE) -C tools
+
+all-subdirs:	all-libs install-libs kernel/kernel.bin
+
+kernel/kernel.bin:
 	$(MAKE) -C kernel CC=$(CC) LD=$(LD) AS=$(AS) AR=$(AR) CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)"
 
 all-libs:
