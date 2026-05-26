@@ -8,3 +8,5 @@ foos.sym
 kernel/foos.map
 tools/mkdisk
 tools/tartest
+.DS_Store
+**/.DS_Store
