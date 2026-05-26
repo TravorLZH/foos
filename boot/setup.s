@@ -1,11 +1,13 @@
 .code16
 .text
-# Constant
+# Constants
+
+.include "boot/sysvars.inc"	# contains SYSSIZE=size of kernel.bin
+
 SETUPSEG=0x9020
 CODESEG=0x8
 PMBASE=0x90200
 SYSSEG=0x1000
-SYSSIZE=0x6C00
 RAMDISK=0x81	# ramdisk in harddisk #2
 RD_SECTORS=1
 RDSEG=0x3000
@@ -16,7 +18,7 @@ KCONFSEG=0x8000
 # Flags:
 # bit[1:0]: ramdisk availability
 # bit[2:1]: RSDP availability
-KCONF_FLAGS=0	
+KCONF_FLAGS=0
 KCONF_RSDPSEG=2		# segment RSDP
 KCONF_RAMDISKSTART=4	# ramdisk start address
 KCONF_RAMDISKEND=8	# ramdisk end address
@@ -44,7 +46,7 @@ lookup_rsdp:
 	incw	%ax
 	cmpw	$0xFFFF,%ax
 	jle	1b
-# If not found in the, find in the first 1024 bytes from EBDA
+# If not found, search in the first 1024 bytes from EBDA
 lookup_rsdp2:
 	pushw	%ds
 	movw	$0x40,%ax

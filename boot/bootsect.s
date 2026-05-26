@@ -1,11 +1,12 @@
 .code16
 
+.include "boot/sysvars.inc"	# contains SYSSIZE=size of kernel.bin
+
 BOOTDEV=0x80
 BOOTSEG=0x7C0
 INITSEG=0x9000
 SETUPSEG=0x9020
 SYSSEG=0x1000	# Load system at 1000:0000
-SYSSIZE=0x6C00	# System size
 SYS_SECTORS=SYSSIZE>>9
 SETUP_SECTORS=1
 
@@ -57,6 +58,8 @@ load_setup:
 	jc	disk_error
 # This loads system using DAP table, WORKING!!!
 load_system_ext:
+	movw	$loading_system,%si
+	call	print_string
 	movw	$kernel_dap,%si
 	movb	$0x42,%ah
 	int	$0x13

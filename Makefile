@@ -32,7 +32,11 @@ install-libs:
 	$(MAKE) -C libc install DEST=$(DEST)
 	$(MAKE) -C libfs install DEST=$(DEST)
 
-%.bin:	%.s
+boot/sysvars.inc:	kernel/kernel.bin
+	@syssize=$$(wc -c < $< | tr -d ' '); \
+	printf "SYSSIZE=0x%x\n" $$syssize > $@;
+
+%.bin:	%.s boot/sysvars.inc
 	$(AS) --32 -o $(<:.s=.o) $<
 	$(LD) $(LDFLAGS) -o $@ $(<:.s=.o)
 
@@ -56,6 +60,7 @@ clean:
 	$(RM) -rf lib/
 	$(RM) -rf *.img *.iso
 	$(RM) -rf boot/*.bin boot/*.o
+	$(RM) -f boot/sysvars.inc
 	$(MAKE) -C kernel $@ RM=$(RM)
 	$(MAKE) -C libc $@ RM=$(RM)
 	$(MAKE) -C libfs $@ RM=$(RM)

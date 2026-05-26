@@ -10,3 +10,5 @@ tools/mkdisk
 tools/tartest
 .DS_Store
 **/.DS_Store
+.vscode
+boot/sysvars.inc
