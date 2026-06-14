@@ -2,7 +2,7 @@
 #define	SYSTEM_H
 #include <inttypes.h>
 #define	CODESEG	0x08
-#define	DATASEG	0x08
+#define	DATASEG	0x10
 #define	NULL	(void*)0
 #define	hang()	while(1)
 

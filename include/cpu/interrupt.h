@@ -27,10 +27,10 @@ typedef	void (*inthandler_t)(struct registers);
 extern void int_init(void);
 extern void int_hook_handler(uint8_t no,inthandler_t handler);
 #define	int_enable() \
-	__asm__("sti");
+	__asm__("sti")
 
 #define	int_disable() \
-	__asm__("cli");
+	__asm__("cli")
 extern void irq_enable(uint8_t irq);
 extern void irq_disable(uint8_t irq);
 

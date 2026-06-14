@@ -25,8 +25,8 @@
 #define	PIT_MODE2X	0x0C	/* Same as Mode 2 */
 #define	PIT_MODE3X	0x0E	/* Same as Mode 3 */
 /* BCD or BIN (bit 0) */
-#define	PIT_BIN	0	/* Use Binary-Coded Decimal */
-#define	PIT_BCD	1	/* Use Binary */
+#define	PIT_BIN	0	/* Use Binary */
+#define	PIT_BCD	1	/* Use Binary-Coded Decimal */
 /* Default frequency of PIT (1193180 Hz) */
 #define	PIT_FREQUENCY	1193180
 /** Wait for several ticks

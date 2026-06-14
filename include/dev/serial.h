@@ -2,6 +2,7 @@
 #define	SERIAL_H
 
 #include <inttypes.h>
+#include <asm/ioports.h>
 
 /* Serial port addresses */
 #define	SERIAL_COM1	0x3F8

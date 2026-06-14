@@ -34,7 +34,7 @@ static void page_fault(struct registers regs)
 int vmem_init(void *reserved)
 {
 	if(tables==NULL){
-		tables=kmalloca(DIR_SIZE,PAGE_ALIGN);
+		tables=kmalloca(DIR_SIZE,PAGE_ALIGN_SHIFT);
 		memset(tables,0,DIR_SIZE);
 		__asm__("movl %%eax,%%cr3"::"a"(tables));
 	}
@@ -58,10 +58,10 @@ uint32_t *vmem_get(void *addr,void *dirptr)
 	size_t tmp=(size_t)addr/PAGE_SIZE;
 	size_t table_i=tmp/1024;
 	size_t offset=tmp%1024;
-	uint32_t *table=(uint32_t*)(dir[table_i] & (0xFFFFFFFF << PAGE_ALIGN));
+	uint32_t *table=(uint32_t*)(dir[table_i] & (0xFFFFFFFF << PAGE_ALIGN_SHIFT));
 	if(!(dir[table_i] & P_PRESENT) || table==NULL){
 		serial_printf("[mem] creating table for 0x%x\n",table);
-		table=(uint32_t*)kmalloca(TABLE_SIZE,PAGE_ALIGN);
+		table=(uint32_t*)kmalloca(TABLE_SIZE,PAGE_ALIGN_SHIFT);
 		dir[table_i]=(size_t)table | P_PRESENT | P_WRITABLE;
 	}
 	return table+offset;
